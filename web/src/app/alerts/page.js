@@ -97,10 +97,15 @@ export default function AlertsPage() {
   }
 
   const alerts = data?.alerts || [];
+
+  const hasMonitoring =
+    Array.isArray(data?.alerts) &&
+    (data.alerts.length > 0 || data?.alerts_meta?.last_checked_at != null);
+
+  const monitoringState = hasMonitoring ? "active" : "idle";
+
   const lastChecked =
-  alerts.length === 0
-    ? data?.alerts_meta?.last_checked_at || null
-    : null;
+    alerts.length === 0 ? data?.alerts_meta?.last_checked_at || null : null;
 
   return (
     <AppShell
@@ -114,6 +119,14 @@ export default function AlertsPage() {
     >
       <div className="jp-page">
         <div className="jp-stack">
+          {/* Monitoring health cue */}
+          <div className="jp-row jp-mb-2">
+            <div className="jp-muted">
+              Monitoring status:{" "}
+              <strong>{monitoringState === "active" ? "Active" : "Idle"}</strong>
+            </div>
+          </div>
+
           {showWelcome ? (
             <WelcomeCard
               onDismiss={() => {

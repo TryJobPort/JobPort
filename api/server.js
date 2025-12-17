@@ -291,6 +291,14 @@ app.get("/alerts", (req, res) => {
     .all(userId, userId);
 
   const alerts = rows.map((r) => {
+  const lastCheckedAt = db
+  .prepare(
+    `SELECT MAX(last_checked_at) AS ts
+     FROM applications
+     WHERE user_id = ?`
+  )
+  .get(userId)?.ts || null;
+
     let alert = null;
 
     if (r.status_changed) {
@@ -343,7 +351,13 @@ app.get("/alerts", (req, res) => {
     };
   });
 
-  res.json({ ok: true, alerts });
+  res.json({
+  ok: true,
+  alerts,
+  alerts_meta: {
+    last_checked_at: lastCheckedAt,
+  },
+});
 });
 /**
  * Remove demo job application (and its events)

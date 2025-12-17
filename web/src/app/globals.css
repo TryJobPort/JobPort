@@ -1,13 +1,56 @@
 :root {
+  /* App background + text */
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Text tokens */
+  --text-primary: #111111;
+
+  /* Status tokens */
+  --status-info: #dbeafe;
+  --status-warn: #fef3c7;
+  --status-critical: #fee2e2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Route legacy Next vars into JobPort tokens */
+    --background: var(--jp-bg);
+    --foreground: var(--jp-text);
+
+    /* If anything still uses these older names */
+    --text-primary: var(--jp-text);
   }
+}
+:root{
+  /* Canvas + surfaces (clean, Figma-like) */
+  --jp-bg: #f6f8fb;                 /* page background */
+  --jp-surface: #ffffff;            /* cards, panels */
+  --jp-surface-2: #f1f5fb;          /* subtle sections */
+  --jp-border: rgba(15, 23, 42, 0.10);
+
+  /* Text (crisp) */
+  --jp-text: rgba(15, 23, 42, 0.92);
+  --jp-text-muted: rgba(15, 23, 42, 0.70);
+  --jp-text-faint: rgba(15, 23, 42, 0.52);
+
+  /* Nautical accent */
+  --jp-accent: #0b5fff;             /* “navy blue” CTA */
+  --jp-accent-2: #06b6d4;           /* teal hint */
+  --jp-danger: #dc2626;
+  --jp-warn: #f59e0b;
+  --jp-success: #16a34a;
+
+  /* Effects */
+  --sh-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --focus: 0 0 0 3px rgba(11, 95, 255, 0.25);
+}
+
+/* Map legacy variables so nothing drifts */
+:root{
+  --background: var(--jp-bg);
+  --foreground: var(--jp-text);
+  --text-primary: var(--jp-text);
 }
 
 html,
@@ -39,4 +82,1897 @@ a {
   html {
     color-scheme: dark;
   }
+}
+/* JobPort — Badge */
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Semantic tones (hook to your token colors) */
+.jp-badge--info {
+  background: var(--status-info);
+  color: var(--text-primary);
+}
+
+.jp-badge--warn {
+  background: var(--status-warn);
+  color: var(--text-primary);
+}
+
+.jp-badge--critical {
+  background: var(--status-critical);
+  color: var(--text-primary);
+}
+/* JobPort — Application Row */
+
+.jp-app-row {
+  display: grid;
+  grid-template-columns: 2fr 2fr 1.5fr 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.jp-app-row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.jp-app-row__company {
+  font-weight: 500;
+}
+
+.jp-app-row__role {
+  color: var(--foreground);
+}
+
+.jp-app-row__status {
+  display: flex;
+}
+
+.jp-app-row__last-checked {
+  color: #666;
+  font-size: 12px;
+}
+/* JobPort — Shell */
+
+.jp-shell {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.jp-topbar {
+  height: 56px;
+  padding: 0 var(--s-4);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: var(--jp-surface);
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.jp-topbar__left::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 24px;
+  background: var(--jp-border);
+  margin-left: var(--s-3);
+}
+.jp-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+}
+
+.jp-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #fff;
+  cursor: pointer;
+}
+
+.jp-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jp-logo__mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.08);
+}
+
+.jp-logo__word {
+  font-weight: 700;
+}
+
+.jp-topbar__right {
+  display: flex;
+  align-items: center;
+}
+
+.jp-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.08);
+}
+
+.jp-body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+.jp-sidenav {
+  border-right: 1px solid rgba(0,0,0,0.08);
+  padding: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jp-content {
+  padding: 16px;
+}
+
+.jp-content__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.jp-h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.jp-content__body {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+}
+/* JobPort — Nav Item */
+.jp-nav-item {
+  height: 40px;
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+.jp-nav-item__label {
+  font-size: 14px;
+}
+
+.jp-nav-item--default {
+  color: var(--foreground);
+}
+
+.jp-nav-item--active {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.08);
+  font-weight: 600;
+}
+
+.jp-nav-item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+/* JobPort — AlertRow */
+.jp-alert-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.jp-alert-row__top {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jp-alert-row__identity {
+  font-size: 14px;
+}
+
+.jp-alert-row__meta {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.jp-alert-row__content {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.jp-alert-row__title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.jp-alert-row__message {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+.jp-alert-row__right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 2px;
+}
+/* -----------------------------
+   Alert row hierarchy
+   ----------------------------- */
+
+.jp-alert-row {
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--jp-border);
+  background: var(--jp-surface);
+}
+
+/* Identity (company — role) */
+.jp-alert-row__identity {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: var(--jp-text);
+}
+
+/* Timestamp / meta */
+.jp-alert-row__meta {
+  margin-top: 2px;
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+
+/* Alert title (primary signal) */
+.jp-alert-row__title {
+  margin-top: var(--s-2);
+  font-size: var(--t-md);
+  font-weight: 700;
+  color: var(--jp-text);
+}
+
+/* Message (secondary explanation) */
+.jp-alert-row__message {
+  margin-top: var(--s-2);
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+  max-width: 72ch;
+}
+
+/* Actions */
+.jp-alert-row__actions {
+  margin-top: var(--s-3);
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+}
+.jp-alert-row--critical {
+  border-left: 4px solid var(--jp-danger);
+}
+
+.jp-alert-row--warn {
+  border-left: 4px solid var(--jp-warn);
+}
+
+.jp-alert-row--info {
+  border-left: 4px solid var(--jp-accent-2);
+}
+
+
+.jp-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  cursor: pointer;
+}
+
+.jp-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.jp-btn-link {
+  border: 0;
+  background: transparent;
+  padding: 6px 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+/* JobPort — AlertRow (single surface) */
+.jp-alert-row {
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  background: var(--background);
+}
+
+.jp-alert-row__identity {
+  font-size: 14px;
+}
+
+.jp-alert-row__meta {
+  font-size: 12px;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+
+.jp-alert-row__title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.jp-alert-row__message {
+  font-size: 13px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.jp-alert-row__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.jp-btn {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.jp-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.jp-btn--primary {
+  border-color: rgba(0,0,0,0.12);
+  background: rgba(0,0,0,0.06);
+  font-weight: 600;
+}
+
+.jp-btn--ghost {
+  background: transparent;
+}
+
+/* Optional subtle severity edge */
+.jp-alert-row--info { }
+.jp-alert-row--warn { }
+.jp-alert-row--critical { }
+/* JobPort — Timeline */
+.jp-timeline {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.jp-timeline__rail {
+  display: flex;
+  justify-content: center;
+  padding-top: 14px;
+}
+
+.jp-timeline__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.18);
+  background: var(--background);
+}
+
+.jp-timeline__card {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--background);
+}
+
+.jp-timeline__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.jp-timeline__pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.12);
+  opacity: 0.85;
+}
+
+.jp-timeline__desc {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 6px;
+}
+
+.jp-timeline__meta {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 8px;
+}
+.jp-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 16px; background: rgba(255,255,255,0.03); }
+.jp-card__header { margin-bottom: 12px; }
+.jp-card__title { font-size: 16px; font-weight: 650; }
+.jp-card__subtitle { opacity: 0.75; font-size: 13px; margin-top: 4px; }
+
+.jp-form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.jp-field--full { grid-column: 1 / -1; }
+
+.jp-field__label { font-size: 12px; opacity: 0.8; margin-bottom: 6px; }
+.jp-field__hint { font-size: 12px; opacity: 0.65; margin-top: 6px; }
+
+.jp-input, .jp-select {
+  width: 100%;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.20);
+  color: inherit;
+  padding: 0 12px;
+}
+
+.jp-form__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
+.jp-btn { height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04); }
+.jp-btn--primary { background: rgba(255,255,255,0.12); }
+.jp-btn--ghost { background: transparent; }
+/* Readability boosts */
+:root {
+  --jp-text: rgba(255,255,255,0.92);
+  --jp-muted: rgba(255,255,255,0.70);
+  --jp-border: rgba(255,255,255,0.12);
+  --jp-surface: rgba(255,255,255,0.04);
+}
+
+body {
+  color: var(--jp-text);
+  font-size: 14.5px;
+  line-height: 1.45;
+}
+
+.jp-card {
+  background: var(--jp-surface);
+  border: 1px solid var(--jp-border);
+}
+
+.jp-card__title {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.jp-card__subtitle,
+.jp-field__hint,
+.jp-muted {
+  color: var(--jp-muted);
+}
+
+.jp-input,
+.jp-select {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--jp-border);
+  color: var(--jp-text);
+  font-size: 14px;
+}
+
+.jp-input::placeholder {
+  color: rgba(255,255,255,0.55);
+}
+
+.jp-btn {
+  font-size: 14px;
+  border: 1px solid var(--jp-border);
+  color: var(--jp-text);
+}
+
+.jp-btn--primary {
+  background: rgba(255,255,255,0.14);
+}
+:root {
+  /* Surfaces */
+  --jp-bg: #0b0f17;
+  --jp-surface: rgba(255, 255, 255, 0.06);
+  --jp-surface-2: rgba(255, 255, 255, 0.08);
+  --jp-border: rgba(255, 255, 255, 0.10);
+
+  /* Text */
+  --jp-text: rgba(255, 255, 255, 0.92);
+  --jp-text-muted: rgba(255, 255, 255, 0.68);
+  --jp-text-faint: rgba(255, 255, 255, 0.52);
+
+  /* Accents */
+  --jp-accent: #7c5cff;
+  --jp-accent-2: #4fd1c5;
+  --jp-danger: #ff4d6d;
+  --jp-warn: #ffb020;
+
+  /* Status (align with your badges) */
+  --status-info: rgba(124, 92, 255, 0.95);
+  --status-warn: rgba(255, 176, 32, 0.95);
+  --status-critical: rgba(255, 77, 109, 0.95);
+
+  /* Radius */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+
+  /* Spacing scale */
+  --s-1: 6px;
+  --s-2: 10px;
+  --s-3: 14px;
+  --s-4: 18px;
+  --s-5: 24px;
+  --s-6: 32px;
+
+  /* Type */
+  --t-xs: 12px;
+  --t-sm: 13px;
+  --t-md: 14px;
+  --t-lg: 16px;
+  --t-xl: 18px;
+  --t-2xl: 22px;
+
+  /* Shadows */
+  --sh-sm: 0 10px 30px rgba(0,0,0,0.22);
+  --sh-md: 0 16px 60px rgba(0,0,0,0.30);
+
+  /* Focus */
+  --focus: 0 0 0 4px rgba(124, 92, 255, 0.28);
+}
+
+html, body {
+  background: radial-gradient(1200px 600px at 20% -10%, rgba(124, 92, 255, 0.20), transparent 60%),
+              radial-gradient(900px 500px at 90% 0%, rgba(79, 209, 197, 0.14), transparent 55%),
+              var(--jp-bg);
+  color: var(--jp-text);
+}
+
+/* -------- Layout helpers -------- */
+.jp-page {
+  padding: var(--s-5);
+}
+
+.jp-stack {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.jp-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.jp-row--wrap {
+  flex-wrap: wrap;
+}
+
+.jp-spacer {
+  flex: 1;
+}
+
+/* -------- Card -------- */
+.jp-card {
+  background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.04));
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+}
+
+.jp-card__header {
+  padding: var(--s-5);
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-card__title {
+  font-size: var(--t-2xl);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.jp-card__subtitle {
+  margin-top: var(--s-2);
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+}
+
+/* -------- Buttons -------- */
+.jp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--jp-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--jp-text);
+  font-size: var(--t-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+}
+
+.jp-btn:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.jp-btn:active {
+  transform: translateY(1px);
+}
+
+.jp-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+.jp-btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.jp-btn--primary {
+  background: linear-gradient(180deg, rgba(124, 92, 255, 1), rgba(124, 92, 255, 0.78));
+  border-color: rgba(124, 92, 255, 0.70);
+}
+
+.jp-btn--primary:hover {
+  background: linear-gradient(180deg, rgba(124, 92, 255, 1), rgba(124, 92, 255, 0.92));
+  border-color: rgba(124, 92, 255, 0.85);
+}
+
+.jp-btn--ghost {
+  background: transparent;
+}
+
+/* -------- Inputs -------- */
+.jp-input,
+.jp-select {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--jp-border);
+  background: rgba(0,0,0,0.22);
+  color: var(--jp-text);
+  font-size: var(--t-md);
+  outline: none;
+  transition: box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.jp-input::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+.jp-input:focus,
+.jp-select:focus {
+  box-shadow: var(--focus);
+  border-color: rgba(124, 92, 255, 0.65);
+  background: rgba(0,0,0,0.28);
+}
+
+/* -------- Form -------- */
+.jp-form {
+  padding: var(--s-5);
+}
+
+.jp-form__grid {
+  display: grid;
+  gap: var(--s-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 860px) {
+  .jp-form__grid { grid-template-columns: 1fr; }
+}
+
+.jp-field--full {
+  grid-column: 1 / -1;
+}
+
+.jp-field__label {
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+  margin-bottom: var(--s-2);
+}
+
+.jp-field__hint {
+  margin-top: var(--s-2);
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+
+.jp-form__actions {
+  margin-top: var(--s-5);
+  display: flex;
+  gap: var(--s-3);
+  justify-content: flex-end;
+}
+
+.jp-muted {
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+
+/* -------- Nav item -------- */
+.jp-nav-item {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--jp-text-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+
+.jp-nav-item:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--jp-text);
+}
+
+.jp-nav-item--active {
+  background: rgba(124, 92, 255, 0.14);
+  border-color: rgba(124, 92, 255, 0.22);
+  color: var(--jp-text);
+}
+
+.jp-nav-item--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* -------- List cards -------- */
+.jp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--s-4);
+}
+
+.jp-list-card {
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.04));
+  overflow: hidden;
+}
+
+.jp-list-card__meta {
+  padding: 0 var(--s-5) var(--s-4) var(--s-5);
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+  color: var(--jp-text-muted);
+  font-size: var(--t-xs);
+}
+
+.jp-list-card__foot {
+  padding: 0 var(--s-5) var(--s-5) var(--s-5);
+}
+
+/* -------- Badges (keep compatible with your tokens) -------- */
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--jp-border);
+  font-size: var(--t-xs);
+  color: var(--jp-text);
+  background: rgba(255,255,255,0.06);
+}
+/* -----------------------------
+   Status badges
+   ----------------------------- */
+
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--s-2);
+
+  border-radius: 999px;
+  font-size: var(--t-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+
+  border: 1px solid transparent;
+  background: var(--jp-surface-2);
+  color: var(--jp-text);
+}
+
+/* Applied / default */
+.jp-badge--applied {
+  background: #e8eef7;
+  color: #1e3a8a;
+  border-color: rgba(30, 58, 138, 0.15);
+}
+
+/* Under review */
+.jp-badge--under-review {
+  background: #e0f2fe;
+  color: #075985;
+  border-color: rgba(7, 89, 133, 0.18);
+}
+
+/* Interview */
+.jp-badge--interview {
+  background: #ecfeff;
+  color: #0f766e;
+  border-color: rgba(15, 118, 110, 0.18);
+}
+
+/* Offer */
+.jp-badge--offer {
+  background: #ecfdf5;
+  color: #065f46;
+  border-color: rgba(6, 95, 70, 0.18);
+}
+
+/* Rejected */
+.jp-badge--rejected {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: rgba(153, 27, 27, 0.18);
+}
+
+.jp-badge--info { border-color: rgba(124, 92, 255, 0.55); }
+.jp-badge--warn { border-color: rgba(255, 176, 32, 0.55); }
+.jp-badge--critical { border-color: rgba(255, 77, 109, 0.55); }
+
+/* -------- Empty state -------- */
+.jp-empty {
+  padding: var(--s-6);
+  text-align: center;
+}
+
+.jp-empty__art {
+  margin: 0 auto var(--s-4) auto;
+  width: 84px;
+  height: 84px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 20%, rgba(124, 92, 255, 0.35), transparent 55%),
+              radial-gradient(circle at 70% 60%, rgba(79, 209, 197, 0.28), transparent 55%),
+              rgba(255,255,255,0.06);
+  border: 1px solid var(--jp-border);
+  box-shadow: var(--sh-sm);
+}
+
+.jp-empty__title {
+  font-size: var(--t-xl);
+  font-weight: 650;
+}
+
+.jp-empty__subtitle {
+  margin-top: var(--s-2);
+  color: var(--jp-text-muted);
+  font-size: var(--t-sm);
+}
+
+.jp-empty__actions {
+  margin-top: var(--s-4);
+  display: flex;
+  justify-content: center;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+/* -------- Toast -------- */
+.jp-toast-host {
+  position: fixed;
+  right: var(--s-5);
+  bottom: var(--s-5);
+  display: grid;
+  gap: var(--s-3);
+  z-index: 9999;
+}
+/* Toast host should never block page interactions */
+.jp-toast-host {
+  pointer-events: none;
+}
+
+/* Actual toast cards remain clickable */
+.jp-toast {
+  pointer-events: auto;
+}
+
+.jp-toast {
+  width: min(420px, calc(100vw - 48px));
+  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-md);
+  padding: var(--s-4);
+}
+
+.jp-toast__title {
+  font-weight: 650;
+  font-size: var(--t-md);
+}
+
+.jp-toast__msg {
+  margin-top: var(--s-2);
+  color: var(--jp-text-muted);
+  font-size: var(--t-sm);
+}
+
+.jp-toast--success { border-color: rgba(79, 209, 197, 0.45); }
+.jp-toast--error { border-color: rgba(255, 77, 109, 0.55); }
+
+/* -------- Skeletons -------- */
+.jp-skel {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+  background-size: 200% 100%;
+  animation: jp-shimmer 1.1s linear infinite;
+  border-radius: 10px;
+}
+
+@keyframes jp-shimmer {
+  0% { background-position: 0% 0%; }
+  100% { background-position: -200% 0%; }
+}
+
+.jp-skel-row {
+  padding: var(--s-5);
+  display: grid;
+  gap: var(--s-3);
+}
+
+.jp-skel-line { height: 12px; }
+.jp-skel-line--lg { height: 16px; }
+.jp-skel-line--w40 { width: 40%; }
+.jp-skel-line--w60 { width: 60%; }
+.jp-skel-line--w80 { width: 80%; }
+.jp-timeline {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: var(--s-3);
+  align-items: start;
+}
+
+.jp-timeline__rail {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14px;
+}
+
+.jp-timeline__line {
+  position: absolute;
+  top: 26px;
+  bottom: -14px;
+  width: 2px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 2px;
+}
+
+.jp-timeline__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.18);
+}
+
+.jp-timeline__dot--status {
+  border-color: rgba(124, 92, 255, 0.55);
+  background: rgba(124, 92, 255, 0.22);
+}
+
+.jp-timeline__dot--drift {
+  border-color: rgba(255, 176, 32, 0.55);
+  background: rgba(255, 176, 32, 0.20);
+}
+
+.jp-timeline__card {
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.04));
+  padding: var(--s-4);
+}
+
+.jp-timeline__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+}
+
+.jp-timeline__title {
+  font-size: var(--t-md);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.jp-timeline__pill {
+  font-size: var(--t-xs);
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: var(--jp-text-muted);
+}
+
+.jp-timeline__pill--status {
+  border-color: rgba(124, 92, 255, 0.40);
+  color: rgba(124, 92, 255, 0.95);
+  background: rgba(124, 92, 255, 0.10);
+}
+
+.jp-timeline__pill--drift {
+  border-color: rgba(255, 176, 32, 0.40);
+  color: rgba(255, 176, 32, 0.95);
+  background: rgba(255, 176, 32, 0.10);
+}
+
+.jp-timeline__desc {
+  margin-top: var(--s-3);
+  font-size: var(--t-sm);
+  color: var(--jp-text);
+  line-height: 1.35;
+}
+
+.jp-timeline__mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: var(--t-sm);
+  color: rgba(255,255,255,0.88);
+}
+
+.jp-timeline__arrow {
+  margin: 0 10px;
+  color: var(--jp-text-faint);
+}
+
+.jp-timeline__meta {
+  margin-top: var(--s-3);
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+/* -------- Shell -------- */
+.jp-shell {
+  min-height: 100vh;
+}
+
+.jp-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(10px);
+  background: rgba(11, 15, 23, 0.72);
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-topbar__inner {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--s-5);
+  gap: var(--s-4);
+}
+
+.jp-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.jp-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.jp-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--jp-border);
+  background: rgba(255,255,255,0.06);
+  color: var(--jp-text);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.jp-icon-btn:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.jp-icon-btn:active {
+  transform: translateY(1px);
+}
+
+.jp-icon-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* Logo */
+.jp-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.jp-logo__mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 10px;
+  background: radial-gradient(circle at 30% 20%, rgba(124, 92, 255, 0.9), rgba(124, 92, 255, 0.2)),
+              radial-gradient(circle at 70% 60%, rgba(79, 209, 197, 0.7), transparent 55%),
+              rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: var(--sh-sm);
+}
+
+.jp-logo__word {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Avatar */
+.jp-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: radial-gradient(circle at 40% 30%, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+}
+
+/* Body layout */
+.jp-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 980px) {
+  .jp-body {
+    grid-template-columns: 1fr;
+  }
+  .jp-sidenav {
+    display: none;
+  }
+}
+
+.jp-sidenav {
+  padding: var(--s-5);
+  border-right: 1px solid var(--jp-border);
+  background: rgba(255,255,255,0.02);
+}
+
+.jp-sidenav__group {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.jp-sidenav__label {
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  margin-bottom: var(--s-1);
+}
+
+.jp-content {
+  padding: var(--s-5);
+}
+
+.jp-content__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+
+.jp-content__title {
+  display: grid;
+  gap: var(--s-2);
+}
+
+.jp-h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.jp-content__sub {
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+}
+
+.jp-content__cta {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.jp-content__body {
+  display: grid;
+  gap: var(--s-4);
+}
+.jp-form__note {
+  margin-top: var(--s-3);
+}
+/* -------- Alert Row -------- */
+.jp-alert-row {
+  display: grid;
+  grid-template-columns: 6px 1fr;
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-lg);
+  background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.03));
+  overflow: hidden;
+}
+
+.jp-alert-row__bar {
+  background: rgba(255,255,255,0.10);
+}
+
+.jp-alert-row__main {
+  padding: var(--s-4);
+  display: grid;
+  gap: var(--s-3);
+}
+
+.jp-alert-row__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--s-4);
+}
+
+.jp-alert-row__who {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  min-width: 0;
+}
+
+.jp-alert-row__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  flex: 0 0 auto;
+}
+
+.jp-alert-row__identity {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.jp-alert-row__company {
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
+
+.jp-alert-row__role {
+  color: var(--jp-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+.jp-alert-row__sep {
+  color: var(--jp-text-faint);
+}
+
+.jp-alert-row__right {
+  display: grid;
+  justify-items: end;
+  gap: var(--s-2);
+  flex: 0 0 auto;
+}
+
+.jp-alert-row__meta {
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+
+.jp-alert-row__actions {
+  display: flex;
+  gap: var(--s-2);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.jp-alert-row__content {
+  display: grid;
+  gap: 6px;
+}
+
+.jp-alert-row__title {
+  font-size: var(--t-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.jp-alert-row__message {
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+  line-height: 1.35;
+}
+
+/* Severity styling */
+.jp-alert-row--info .jp-alert-row__bar {
+  background: rgba(79, 209, 197, 0.35);
+}
+.jp-alert-row--info .jp-alert-row__dot {
+  border-color: rgba(79, 209, 197, 0.55);
+  background: rgba(79, 209, 197, 0.22);
+}
+
+.jp-alert-row--warn .jp-alert-row__bar {
+  background: rgba(255, 176, 32, 0.40);
+}
+.jp-alert-row--warn .jp-alert-row__dot {
+  border-color: rgba(255, 176, 32, 0.60);
+  background: rgba(255, 176, 32, 0.22);
+}
+
+.jp-alert-row--critical .jp-alert-row__bar {
+  background: rgba(255, 92, 120, 0.45);
+}
+.jp-alert-row--critical .jp-alert-row__dot {
+  border-color: rgba(255, 92, 120, 0.65);
+  background: rgba(255, 92, 120, 0.22);
+}
+
+/* Mobile: actions drop under identity */
+@media (max-width: 760px) {
+  .jp-alert-row__top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .jp-alert-row__right {
+    justify-items: start;
+  }
+  .jp-alert-row__actions {
+    justify-content: flex-start;
+  }
+  .jp-alert-row__company,
+  .jp-alert-row__role {
+    max-width: 100%;
+  }
+}
+/* -------- Toasts -------- */
+.jp-toast-host {
+  position: fixed;
+  right: var(--s-5);
+  top: 76px; /* below topbar */
+  z-index: 1000;
+  display: grid;
+  gap: var(--s-3);
+  width: min(420px, calc(100vw - 32px));
+}
+
+.jp-toast {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s-3);
+  align-items: start;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--jp-border);
+  background: linear-gradient(180deg, rgba(18, 24, 36, 0.95), rgba(18, 24, 36, 0.78));
+  box-shadow: var(--sh-md);
+  animation: jp-toast-in 140ms ease-out;
+}
+
+@keyframes jp-toast-in {
+  from {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.jp-toast__body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.jp-toast__title {
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  font-size: var(--t-sm);
+}
+
+.jp-toast__msg {
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+  line-height: 1.35;
+}
+
+.jp-toast__x {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: var(--jp-text);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, transform 0.08s ease;
+}
+
+.jp-toast__x:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.jp-toast__x:active {
+  transform: translateY(1px);
+}
+
+.jp-toast__x:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* Tones */
+.jp-toast--success {
+  border-color: rgba(79, 209, 197, 0.28);
+}
+.jp-toast--warning {
+  border-color: rgba(255, 176, 32, 0.28);
+}
+.jp-toast--error {
+  border-color: rgba(255, 92, 120, 0.30);
+}
+
+@media (max-width: 760px) {
+  .jp-toast-host {
+    left: 16px;
+    right: 16px;
+    width: auto;
+  }
+}
+/* -----------------------------
+   JobPort theme override (fix white-on-white)
+   Paste at VERY BOTTOM of globals.css
+------------------------------ */
+
+:root{
+  /* Map legacy Next vars to JP tokens so older components stay readable */
+  --background: var(--jp-bg);
+  --foreground: var(--jp-text);
+  --text-primary: var(--jp-text);
+}
+
+/* Force page canvas + default text */
+html, body{
+  background: var(--jp-bg);
+  color: var(--jp-text);
+}
+
+/* Links should not inherit "invisible" colors */
+a{ color: var(--jp-text); }
+
+/* Hardcoded light surfaces → token surfaces */
+.jp-topbar,
+.jp-sidenav,
+.jp-content__body{
+  background: var(--jp-surface);
+  border-color: var(--jp-border);
+  color: var(--jp-text);
+}
+
+/* Alerts: guarantee readable card + text */
+.jp-alert-row{
+  background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.04));
+  border-color: var(--jp-border);
+  color: var(--jp-text);
+}
+.jp-alert-row__message{ color: var(--jp-text-muted); }
+.jp-alert-row__meta{ color: var(--jp-text-faint); }
+
+/* Buttons: keep visible on dark surfaces */
+.jp-btn{
+  color: var(--jp-text);
+  border-color: var(--jp-border);
+  background: rgba(255,255,255,0.06);
+}
+.jp-btn--ghost{ background: transparent; }
+.jp-grow { flex: 1; min-width: 0; }
+.jp-mt-3 { margin-top: var(--s-3); }
+.jp-mt-4 { margin-top: var(--s-4); }
+
+.jp-gap-2 { gap: var(--s-2); }
+
+.jp-h2 { font-size: var(--t-xl); }
+
+.jp-danger { color: var(--jp-danger); font-size: var(--t-sm); }
+
+.jp-link { color: var(--jp-text); text-decoration: underline; text-underline-offset: 3px; opacity: 0.9; }
+.jp-link:hover { opacity: 1; }
+
+.jp-card,
+.jp-list-card,
+.jp-alert-row,
+.jp-timeline__card{
+  background: var(--jp-surface);
+  border-color: var(--jp-border);
+  color: var(--jp-text);
+}
+/* -----------------------------
+   Timeline polish
+   ----------------------------- */
+
+.jp-timeline {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  column-gap: var(--s-3);
+}
+
+.jp-timeline__rail {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.jp-timeline__rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--jp-border);
+}
+
+.jp-timeline__dot {
+  position: relative;
+  z-index: 1;
+  width: 10px;
+  height: 10px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--jp-accent);
+  box-shadow: 0 0 0 4px var(--jp-surface);
+}
+
+.jp-timeline__card {
+  padding: var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--jp-surface);
+  border: 1px solid var(--jp-border);
+}
+
+.jp-timeline__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 600;
+}
+
+.jp-timeline__pill {
+  font-size: var(--t-2xs);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--jp-surface-2);
+  color: var(--jp-text-muted);
+}
+
+.jp-timeline__desc {
+  margin-top: var(--s-2);
+  font-size: var(--t-sm);
+}
+
+.jp-timeline__meta {
+  margin-top: var(--s-2);
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+
+.jp-btn--primary{
+  background: var(--jp-accent);
+  border-color: rgba(0,0,0,0);
+  color: #ffffff;
+}
+
+.jp-btn{
+  background: var(--jp-surface);
+}
+
+.jp-btn--ghost{
+  background: transparent;
+}
+
+.jp-topbar,
+.jp-sidenav,
+.jp-content__body{
+  background: var(--jp-surface);
+  border-color: var(--jp-border);
+}
+/* =========================
+   JobPort — Light Nautical Theme
+   ========================= */
+
+:root {
+  /* Canvas */
+  --jp-bg: #f6f8fb;
+  --jp-surface: #ffffff;
+  --jp-surface-2: #f1f5fb;
+  --jp-border: rgba(15, 23, 42, 0.12);
+
+  /* Text */
+  --jp-text: #0f172a;
+  --jp-text-muted: #475569;
+  --jp-text-faint: #64748b;
+
+  /* Nautical accents */
+  --jp-accent: #0b5fff;     /* navy */
+  --jp-accent-2: #06b6d4;   /* teal */
+  --jp-danger: #dc2626;
+  --jp-warn: #f59e0b;
+  --jp-success: #16a34a;
+
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+
+  /* Shadows */
+  --sh-sm: 0 6px 20px rgba(15, 23, 42, 0.08);
+  --sh-md: 0 12px 40px rgba(15, 23, 42, 0.12);
+}
+
+/* Map legacy vars */
+:root {
+  --background: var(--jp-bg);
+  --foreground: var(--jp-text);
+  --text-primary: var(--jp-text);
+}
+
+html,
+body {
+  background: var(--jp-bg);
+  color: var(--jp-text);
+}
+.jp-btn--primary {
+  background: var(--jp-accent);
+  color: #fff;
+}
+
+.jp-content {
+  padding: var(--s-4);
+}
+
+.jp-content__header {
+  margin-bottom: var(--s-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.jp-nav-item {
+  position: relative;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.jp-nav-item--active {
+  background: var(--jp-surface);
+  color: var(--jp-text);
+  font-weight: 600;
+}
+
+.jp-nav-item--active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--jp-accent);
+}
+/* -----------------------------
+   Typography system
+   ----------------------------- */
+
+/* Base */
+body {
+  font-size: var(--t-sm);
+  line-height: 1.45;
+  color: var(--jp-text);
+}
+
+/* Page titles */
+.jp-h1,
+.jp-content__header h1 {
+  font-size: var(--t-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* Section / card titles */
+.jp-h2,
+.jp-card__title {
+  font-size: var(--t-lg);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Subtitles */
+.jp-card__subtitle {
+  font-size: var(--t-sm);
+  color: var(--jp-text-muted);
+  margin-top: 2px;
+}
+
+/* Body copy */
+.jp-text {
+  font-size: var(--t-sm);
+}
+
+/* Muted helper text */
+.jp-muted {
+  font-size: var(--t-xs);
+  color: var(--jp-text-muted);
+  line-height: 1.4;
+}
+
+/* Very faint meta (timestamps, rails) */
+.jp-faint {
+  font-size: var(--t-xs);
+  color: var(--jp-text-faint);
+}
+.jp-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.jp-card__header {
+  gap: var(--s-2);
+}
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--s-2);
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: var(--r-sm);
+  line-height: 1;
+}
+
+.jp-badge--demo {
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-subtle);
+}
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  margin-left: 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.jp-badge--demo {
+  background: rgba(59, 130, 246, 0.08); /* soft blue */
+  color: #2563eb; /* muted blue */
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.jp-page, .jp-stack, .jp-card, .jp-row, .jp-btn, a {
+  pointer-events: auto !important;
+}
+/* Ensure content is above nav/background layers */
+.jp-content,
+.jp-content__body {
+  position: relative;
+  z-index: 2;
+}
+
+/* Keep sidenav/topbar below content click targets if they overlap */
+.jp-sidenav,
+.jp-topbar {
+  position: relative;
+  z-index: 1;
+}
+/* Clickability + stacking: ensure main content sits above any layout layers */
+.jp-shell {
+  position: relative;
+}
+
+.jp-body {
+  position: relative;
+}
+
+.jp-content {
+  position: relative;
+  z-index: 10;
+}
+
+.jp-content__header,
+.jp-content__body {
+  position: relative;
+  z-index: 10;
+}
+
+/* Keep nav/topbar underneath content in stacking context */
+.jp-topbar,
+.jp-sidenav {
+  position: relative;
+  z-index: 1;
 }

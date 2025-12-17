@@ -15,12 +15,7 @@ export default function InlineNotice({
           </div>
 
           {ctaHref ? (
-            <a
-              className="jp-btn jp-btn--primary"
-              href={ctaHref}
-              style={{ position: "relative", zIndex: 9999, pointerEvents: "auto" }}
-              onClick={(e) => e.stopPropagation()}
-            >
+            <a className="jp-btn jp-btn--primary" href={ctaHref}>
               {ctaLabel || "Upgrade"}
             </a>
           ) : null}

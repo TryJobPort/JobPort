@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function InlineNotice({
   tone = "warn",
   title,
@@ -17,9 +15,9 @@ export default function InlineNotice({
           </div>
 
           {ctaHref ? (
-            <Link className="jp-btn jp-btn--primary" href={ctaHref}>
+            <a className="jp-btn jp-btn--primary" href={ctaHref}>
               {ctaLabel || "Upgrade"}
-            </Link>
+            </a>
           ) : null}
         </div>
       </div>

@@ -15,7 +15,11 @@ export default function InlineNotice({
           </div>
 
           {ctaHref ? (
-            <a className="jp-btn jp-btn--primary" href={ctaHref}>
+            <a
+                className="jp-btn jp-btn--primary"
+                href={ctaHref}
+            >
+
               {ctaLabel || "Upgrade"}
             </a>
           ) : null}

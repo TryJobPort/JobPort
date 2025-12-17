@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const crypto = require("crypto");
+
 const db = require("./db");
 const { normalizeJobApplicationStatus } = require("./lib/status");
 const { scanJobApplication } = require("./services/scanJobApplication");
@@ -28,6 +29,12 @@ function requireUser(req, res) {
     return null;
   }
   return String(userId);
+}
+
+function newId() {
+  return crypto.randomUUID
+    ? crypto.randomUUID()
+    : crypto.randomBytes(16).toString("hex");
 }
 
 /**
@@ -60,7 +67,7 @@ app.get("/applications", (req, res) => {
 
 /**
  * Create a job application
- * Free plan: 1 tracked job application
+ * Free plan: 1 tracked job application (enforced elsewhere; you can tune the limit)
  */
 app.post("/applications", (req, res) => {
   try {
@@ -76,7 +83,6 @@ app.post("/applications", (req, res) => {
     const statusC = normalizeJobApplicationStatus(status);
     const urlC = clean(url);
 
-    // Required fields (match your UI intent)
     if (!companyC || !roleC || !urlC) {
       return res.status(400).json({
         ok: false,
@@ -84,12 +90,15 @@ app.post("/applications", (req, res) => {
       });
     }
 
-    // Free limit: 1 tracked job application
+    // NOTE: your message says Free=1, but your old code used >= 3.
+    // Keeping a single place to adjust:
+    const FREE_LIMIT = 1;
+
     const existingCount = db
       .prepare(`SELECT COUNT(1) AS c FROM applications WHERE user_id = ?`)
       .get(userId)?.c;
 
-    if (Number(existingCount || 0) >= 3) {
+    if (Number(existingCount || 0) >= FREE_LIMIT) {
       return res.status(403).json({
         ok: false,
         code: "FREE_LIMIT_REACHED",
@@ -97,18 +106,18 @@ app.post("/applications", (req, res) => {
       });
     }
 
-    const id = crypto.randomUUID
-      ? crypto.randomUUID()
-      : crypto.randomBytes(16).toString("hex");
-
+    const id = newId();
     const nowIso = new Date().toISOString();
 
     db.prepare(
       `
       INSERT INTO applications (
-        id, user_id, company, role, portal, status, url, is_demo, created_at, updated_at
+        id, user_id,
+        company, role, portal, status, url,
+        is_demo,
+        created_at, updated_at
       ) VALUES (
-        ?, ?, ?, ?, ?, ?, ?, ?, ?
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
       )
       `
     ).run(
@@ -119,6 +128,7 @@ app.post("/applications", (req, res) => {
       portalC || null,
       statusC || "Applied",
       urlC,
+      0,
       nowIso,
       nowIso
     );
@@ -155,25 +165,34 @@ app.post("/applications/:id/take-bearing", async (req, res) => {
       .json({ ok: false, error: err?.message || "Scan failed" });
   }
 });
-app.post("/bootstrap/demo", (req, res) => {
+
+/**
+ * Bootstrap demo
+ * - Only creates a demo app if user has 0 apps
+ * - Seeds one demo alert event
+ * - Fire-and-forget auto-scan (optional “instant wow”)
+ */
+app.post("/bootstrap/demo", async (req, res) => {
   const userId = requireUser(req, res);
   if (!userId) return;
-  const { scanJobApplication } = require("./services/scanJobApplication");
 
   const existing = db
     .prepare(`SELECT COUNT(1) AS c FROM applications WHERE user_id = ?`)
     .get(userId)?.c;
 
-  if (existing > 0) {
+  if (Number(existing || 0) > 0) {
     return res.json({ ok: true, skipped: true });
   }
 
-  const id = crypto.randomUUID();
+  const id = newId();
   const now = new Date().toISOString();
 
   db.prepare(
     `INSERT INTO applications (
-      id, user_id, company, role, portal, status, url, is_demo, created_at, updated_at
+      id, user_id,
+      company, role, portal, status, url,
+      is_demo,
+      created_at, updated_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
@@ -183,51 +202,50 @@ app.post("/bootstrap/demo", (req, res) => {
     "Greenhouse",
     "Applied",
     "https://job-boards.greenhouse.io/greenhouse/jobs/4011365007",
-    1,        // ← THIS IS THE MISSING PIECE
+    1,
     now,
     now
   );
+
+  // Seed a demo event so Alerts can show something even before any scan
   db.prepare(
-  `INSERT INTO application_events (
-    id, application_id, user_id,
-    event_type, payload, source,
-    prev_status_signal, next_status_signal, status_changed,
-    drift_detected, prev_signal_mark, next_signal_mark,
-    checked_at, created_at
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-).run(
-  crypto.randomUUID(),
-  id,
-  userId,
-  "status_signal_changed",
-  JSON.stringify({
-    source: "bootstrap",
-    note: "Demo alert",
-    prev_status_signal: "Applied",
-    next_status_signal: "Under Review",
-  }),
-  "bootstrap",
-  "Applied",
-  "Under Review",
-  1,
-  0,
-  null,
-  null,
-  now,
-  now
-);
-// Auto-scan demo once so Alerts is populated
-scanJobApplication({
-  applicationId: id,
-  userId,
-  source: "bootstrap",
-}).catch((err) => {
-  console.error("[bootstrap] demo auto-scan failed", err);
+    `INSERT INTO application_events (
+      id, application_id, user_id,
+      event_type, payload, source,
+      prev_status_signal, next_status_signal, status_changed,
+      drift_detected, prev_signal_mark, next_signal_mark,
+      checked_at, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(
+    newId(),
+    id,
+    userId,
+    "status_signal_changed",
+    JSON.stringify({
+      source: "bootstrap",
+      note: "Demo alert",
+      prev_status_signal: "Applied",
+      next_status_signal: "Under Review",
+    }),
+    "bootstrap",
+    "Applied",
+    "Under Review",
+    1,
+    0,
+    null,
+    null,
+    now,
+    now
+  );
+
+  // Auto-scan demo once (fire-and-forget)
+  scanJobApplication({ applicationId: id, userId, source: "bootstrap" }).catch(
+    (err) => console.error("[bootstrap] demo auto-scan failed", err)
+  );
+
+  res.json({ ok: true, created: true, applicationId: id });
 });
 
-res.json({ ok: true, created: true });
-
-});
 /**
  * Clear alerts (suppresses prior events permanently)
  */
@@ -250,10 +268,21 @@ app.post("/applications/:id/clear-alerts", (req, res) => {
  * - latest qualifying event per job application
  * - qualifying = status_changed OR drift_detected
  * - respect alerts_cleared_at (events before clear are suppressed)
+ * - includes alerts_meta.last_checked_at
  */
 app.get("/alerts", (req, res) => {
   const userId = requireUser(req, res);
   if (!userId) return;
+
+  // Compute once (was your crash: you had this inside map)
+  const lastCheckedAt =
+    db
+      .prepare(
+        `SELECT MAX(last_checked_at) AS ts
+         FROM applications
+         WHERE user_id = ?`
+      )
+      .get(userId)?.ts || null;
 
   const rows = db
     .prepare(
@@ -291,14 +320,6 @@ app.get("/alerts", (req, res) => {
     .all(userId, userId);
 
   const alerts = rows.map((r) => {
-  const lastCheckedAt = db
-  .prepare(
-    `SELECT MAX(last_checked_at) AS ts
-     FROM applications
-     WHERE user_id = ?`
-  )
-  .get(userId)?.ts || null;
-
     let alert = null;
 
     if (r.status_changed) {
@@ -313,11 +334,14 @@ app.get("/alerts", (req, res) => {
           prevStatus: r.prev_status_signal || "UNKNOWN",
           nextStatus: r.next_status_signal || "UNKNOWN",
         },
-        primaryAction: { 
+        primaryAction: {
           label: "View history",
           href: `/job-applications/${r.application_id}`,
         },
-      secondaryAction: { label: "Open job application page", href: r.url },
+        secondaryAction: {
+          label: "Open job application page",
+          href: r.url,
+        },
       };
     } else if (r.drift_detected) {
       alert = {
@@ -330,7 +354,10 @@ app.get("/alerts", (req, res) => {
           label: "View history",
           href: `/job-applications/${r.application_id}`,
         },
-        secondaryAction: { label: "Open job application page", href: r.url },
+        secondaryAction: {
+          label: "Open job application page",
+          href: r.url,
+        },
       };
     }
 
@@ -352,13 +379,14 @@ app.get("/alerts", (req, res) => {
   });
 
   res.json({
-  ok: true,
-  alerts,
-  alerts_meta: {
-    last_checked_at: lastCheckedAt,
-  },
+    ok: true,
+    alerts,
+    alerts_meta: {
+      last_checked_at: lastCheckedAt,
+    },
+  });
 });
-});
+
 /**
  * Remove demo job application (and its events)
  */
@@ -368,7 +396,6 @@ app.delete("/applications/:id/remove-demo", (req, res) => {
 
   const { id } = req.params;
 
-  // Ensure this is a demo application
   const appRow = db
     .prepare(
       `SELECT id FROM applications
@@ -383,13 +410,11 @@ app.delete("/applications/:id/remove-demo", (req, res) => {
     });
   }
 
-  // Delete events first
   db.prepare(
     `DELETE FROM application_events
      WHERE application_id = ? AND user_id = ?`
   ).run(id, userId);
 
-  // Delete application
   db.prepare(
     `DELETE FROM applications
      WHERE id = ? AND user_id = ? AND is_demo = 1`

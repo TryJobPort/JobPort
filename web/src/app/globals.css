@@ -1976,3 +1976,107 @@ body {
   position: relative;
   z-index: 1;
 }
+/* =========================
+   Phase 6.3.1 — Locked row preview polish
+   ========================= */
+
+.jp-app-row {
+  position: relative;
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-md);
+  background: var(--jp-surface);
+  padding: 14px;
+}
+
+.jp-app-row__content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jp-app-row__left {
+  min-width: 0;
+}
+
+.jp-app-row__company {
+  font-weight: 600;
+  color: var(--jp-text);
+}
+
+.jp-app-row__role {
+  margin-top: 4px;
+  color: var(--jp-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 560px;
+}
+
+.jp-app-row__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.jp-app-row__last-checked {
+  color: var(--jp-text-faint);
+  font-size: var(--t-xs);
+  min-width: 54px;
+  text-align: right;
+}
+
+/* Locked behavior */
+.jp-app-row--locked {
+  cursor: pointer;
+}
+
+.jp-app-row--locked .jp-app-row__content {
+  transition: filter 120ms ease, opacity 120ms ease;
+}
+
+.jp-app-row--locked:hover .jp-app-row__content {
+  filter: blur(3px);
+  opacity: 0.55;
+}
+
+/* Overlay */
+.jp-app-row__overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+}
+
+.jp-app-row--locked:hover .jp-app-row__overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.jp-app-row__overlay-card {
+  background: var(--jp-surface);
+  border: 1px solid var(--jp-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-sm);
+  padding: 12px 14px;
+  text-align: center;
+  max-width: 420px;
+}
+
+.jp-app-row__overlay-title {
+  font-weight: 700;
+  color: var(--jp-text);
+  margin-bottom: 4px;
+}
+
+.jp-app-row__overlay-sub {
+  color: var(--jp-text-muted);
+  font-size: var(--t-sm);
+  margin-bottom: 10px;
+}

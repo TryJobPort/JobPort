@@ -97,6 +97,10 @@ export default function AlertsPage() {
   }
 
   const alerts = data?.alerts || [];
+  const lastChecked =
+  alerts.length === 0
+    ? data?.alerts_meta?.last_checked_at || null
+    : null;
 
   return (
     <AppShell
@@ -128,10 +132,16 @@ export default function AlertsPage() {
           {data && alerts.length === 0 ? (
             <div className="jp-card">
               <EmptyState
-                title="No alerts yet"
-                subtitle="Run “Scan now” on a job application to generate alerts for changes."
+                title="You’re being monitored"
+                subtitle={
+                  lastChecked
+                    ? `No changes detected. Last checked ${new Date(
+                        lastChecked
+                      ).toLocaleString()}.`
+                    : "No changes detected. We’ll alert you if something meaningful changes."
+                }
                 primaryHref="/job-applications"
-                primaryLabel="Go to job applications"
+                primaryLabel="View job applications"
               />
             </div>
           ) : null}

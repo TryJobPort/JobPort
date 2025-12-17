@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
 import WelcomeCard from "../../components/WelcomeCard";
 import AppShell from "../../components/AppShell";
 import AlertRow from "../../components/AlertRow";
@@ -13,6 +14,7 @@ import { useToast } from "../../components/ToastProvider";
 
 export default function AlertsPage() {
   const toast = useToast();
+
   const [showWelcome, setShowWelcome] = useState(false);
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
@@ -25,12 +27,14 @@ export default function AlertsPage() {
     setData(json);
   }
 
+  // One-time welcome card
   useEffect(() => {
-    useEffect(() => {
-  const seen = localStorage.getItem("jp_seen_welcome");
-  if (!seen) setShowWelcome(true);
-}, []);
+    const seen = localStorage.getItem("jp_seen_welcome");
+    if (!seen) setShowWelcome(true);
+  }, []);
 
+  // Load alerts
+  useEffect(() => {
     let cancelled = false;
 
     async function boot() {
@@ -42,7 +46,12 @@ export default function AlertsPage() {
         if (!cancelled) {
           const message = e?.message || String(e);
           setErr(message);
-          toast.push({ tone: "error", title: "Load failed", message, ttl: 3200 });
+          toast.push({
+            tone: "error",
+            title: "Load failed",
+            message,
+            ttl: 3200,
+          });
         }
       }
     }
@@ -88,14 +97,6 @@ export default function AlertsPage() {
   }
 
   const alerts = data?.alerts || [];
-{showWelcome ? (
-  <WelcomeCard
-    onDismiss={() => {
-      localStorage.setItem("jp_seen_welcome", "1");
-      setShowWelcome(false);
-    }}
-  />
-) : null}
 
   return (
     <AppShell
@@ -109,6 +110,15 @@ export default function AlertsPage() {
     >
       <div className="jp-page">
         <div className="jp-stack">
+          {showWelcome ? (
+            <WelcomeCard
+              onDismiss={() => {
+                localStorage.setItem("jp_seen_welcome", "1");
+                setShowWelcome(false);
+              }}
+            />
+          ) : null}
+
           {err ? (
             <AlertBanner tone="critical" title="Load failed" message={err} />
           ) : null}
@@ -152,8 +162,10 @@ export default function AlertsPage() {
                         primaryAction={a.alert?.primaryAction || null}
                         secondaryAction={a.alert?.secondaryAction || null}
                         clearing={clearing}
-                        onClear={() => clearAlert(a.applicationId, a.company, a.role)}
-                  />
+                        onClear={() =>
+                          clearAlert(a.applicationId, a.company, a.role)
+                        }
+                      />
 
                       {clearErr ? (
                         <div className="jp-list-card__note">

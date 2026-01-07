@@ -39,13 +39,17 @@ export default function NewJobApplicationPage() {
   }
 
   function isFreeLimitError(e) {
-    const msg = String(e?.message || "");
-    const code = String(e?.code || "");
-    const raw = String(e?.raw || "");
+    const msg = String(e?.message || "").toLowerCase();
+    const code = String(e?.code || "").toLowerCase();
+    const raw = String(e?.raw || "").toLowerCase();
+    
     return (
-      msg.includes("FREE_LIMIT_REACHED") ||
-      code.includes("FREE_LIMIT_REACHED") ||
-      raw.includes("FREE_LIMIT_REACHED")
+      msg.includes("free plan") ||
+      msg.includes("upgrade") ||
+      msg.includes("limit") ||
+      msg.includes("free_limit_reached") ||
+      code.includes("free_limit_reached") ||
+      raw.includes("free_limit_reached")
     );
   }
 

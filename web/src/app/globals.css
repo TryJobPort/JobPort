@@ -237,6 +237,11 @@ a {
 .jp-content {
   padding: 16px;
 }
+.jp-content__header {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
+}
 
 .jp-content__header {
   display: flex;
@@ -257,6 +262,21 @@ a {
   border-radius: 16px;
   overflow: hidden;
 }
+/* =========================
+   ApplicationRow — header line alignment
+   ========================= */
+
+.jp-app-row__company {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px; /* spacing between company + badges */
+}
+
+.jp-app-row__company .jp-badge {
+  margin-left: 0 !important; /* overrides inline style marginLeft: 8 */
+}
+
 /* JobPort — Nav Item */
 .jp-nav-item {
   height: 40px;
@@ -679,10 +699,6 @@ html, body {
 }
 
 /* -------- Layout helpers -------- */
-.jp-page {
-  padding: var(--s-5);
-}
-
 .jp-stack {
   display: grid;
   gap: var(--s-4);
@@ -874,11 +890,58 @@ html, body {
   opacity: 0.45;
   cursor: not-allowed;
 }
+/* =========================
+   Job applications card tightening (premium density)
+   ========================= */
+
+/* Reduce inner padding on list cards */
+.jp-list-card {
+  padding: 0;
+  padding-left: 16px;
+  padding-right: 16px; /* keep the card shell clean; control padding in children */
+}
+
+.jp-alert--critical {
+  margin-left: 0;
+  margin-right: 0;
+}
+/* Tighten the top row area (ApplicationRow) */
+.jp-app-row__content {
+  padding: 14px 16px; /* was effectively roomier */
+}
+
+/* Tighten meta/action row */
+.jp-list-card__meta {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid rgba(21, 38, 66, 0.10);
+}
+
+/* Make the footer feel like a single small line */
+.jp-list-card__foot {
+  padding: 10px 16px 14px;
+}
+
+/* Keep Portal text from pushing buttons weirdly */
+.jp-list-card__meta > span {
+  color: rgba(21, 38, 66, 0.72);
+  font-size: 13px;
+}
+
+/* Buttons a touch tighter so the row feels intentional */
+.jp-list-card__meta .jp-btn {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
 
 /* -------- List cards -------- */
 .jp-list {
   list-style: none;
   padding: 0;
+  padding-left: 0;
+  padding-right: 0;
   margin: 0;
   display: grid;
   gap: var(--s-4);
@@ -889,6 +952,8 @@ html, body {
   border-radius: var(--r-lg);
   background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.04));
   overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .jp-list-card__meta {
@@ -903,6 +968,18 @@ html, body {
 
 .jp-list-card__foot {
   padding: 0 var(--s-5) var(--s-5) var(--s-5);
+}
+/* =========================
+   Section separation: notice → list
+   ========================= */
+
+/* Add breathing room after notices before lists */
+.jp-stack > .jp-inline-notice + .jp-list,
+.jp-stack > .jp-inline-notice + .jp-card,
+.jp-stack > .jp-inline-notice + ul.jp-list {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(21, 38, 66, 0.08);
 }
 
 /* -------- Badges (keep compatible with your tokens) -------- */
@@ -1189,6 +1266,53 @@ html, body {
 .jp-shell {
   min-height: 100vh;
 }
+/* =========================
+   Sidenav polish (nautical, low-noise)
+   ========================= */
+
+.jp-body {
+  align-items: stretch;
+}
+
+/* Constrain the rail so content feels primary */
+.jp-sidenav {
+  width: 260px;            /* tighter than full slab */
+  flex: 0 0 260px;
+  background: rgba(21, 38, 66, 0.02);
+  border-right: 1px solid rgba(21, 38, 66, 0.08);
+  padding: 14px 12px;
+}
+
+/* Ensure content area doesn’t inherit rail spacing weirdly */
+.jp-content {
+  background: transparent;
+}
+
+/* Optional: soften the nav item pills if they feel too prominent */
+.jp-sidenav .jp-navitem {
+  border-radius: 12px;
+}
+
+/* =========================
+   Topbar alignment to content column
+   ========================= */
+
+.jp-topbar__inner {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 24px; /* match your content padding rhythm */
+}
+
+/* Make content column match the same grid */
+.jp-content {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Keep header spacing consistent */
+.jp-content__header {
+  padding: 24px;
+}
 
 .jp-topbar {
   position: sticky;
@@ -1365,6 +1489,13 @@ html, body {
   border-radius: var(--r-lg);
   background: linear-gradient(180deg, var(--jp-surface), rgba(255,255,255,0.03));
   overflow: hidden;
+  cursor: pointer;
+  border-color: var(--jp-border-strong);
+}
+
+.jp-alert-row:focus-visible {
+  outline: 2px solid var(--jp-focus);
+  outline-offset: 2px;
 }
 
 .jp-alert-row__bar {
@@ -1809,8 +1940,23 @@ body {
 }
 
 .jp-content {
-  padding: var(--s-4);
+  max-width: 960px;
+  margin: 0 auto;
 }
+.jp-content__header {
+  padding: 24px;
+}
+
+.jp-page {
+  padding: 24px;
+  pointer-events: auto !important;
+}
+.jp-content {
+  flex: 1;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 
 .jp-content__header {
   margin-bottom: var(--s-4);
@@ -1933,8 +2079,10 @@ body {
   color: #2563eb; /* muted blue */
   border: 1px solid rgba(59, 130, 246, 0.25);
 }
-
-.jp-page, .jp-stack, .jp-card, .jp-row, .jp-btn, a {
+.jp-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px;
   pointer-events: auto !important;
 }
 /* Ensure content is above nav/background layers */
@@ -1952,10 +2100,6 @@ body {
 }
 /* Clickability + stacking: ensure main content sits above any layout layers */
 .jp-shell {
-  position: relative;
-}
-
-.jp-body {
   position: relative;
 }
 
@@ -2080,3 +2224,869 @@ body {
   font-size: var(--t-sm);
   margin-bottom: 10px;
 }
+:root {
+  /* Deep Nautical Palette */
+  --navy-900: #152642;
+  --navy-800: #084575;
+  --sand-100: #f3efd5;
+  --sand-200: #e7d5a7;
+  --stone-300: #c0b2a4;
+
+  --accent: var(--navy-800);
+  --accent-soft: #0f5f9a;
+
+  --bg: #ffffff;
+  --bg-muted: var(--sand-100);
+  --border-subtle: rgba(21, 38, 66, 0.12);
+
+  --text-primary: #152642;
+  --text-secondary: #4b5c73;
+  --text-muted: #7b8899;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-soft: 0 6px 20px rgba(21, 38, 66, 0.08);
+}
+
+body {
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #f6f8fa 100%
+  );
+  color: var(--text-primary);
+}
+:root {
+  /* Deep Nautical Palette */
+  --navy-900: #152642;
+  --navy-800: #084575;
+  --sand-100: #f3efd5;
+  --sand-200: #e7d5a7;
+  --stone-300: #c0b2a4;
+
+  --bg: #ffffff;
+  --bg-muted: var(--sand-100);
+
+  --text: var(--navy-900);
+  --text-muted: rgba(21, 38, 66, 0.72);
+  --border: rgba(21, 38, 66, 0.14);
+
+  --accent: var(--navy-800);
+  --accent-hover: #0b5b95;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+
+  --shadow: 0 10px 30px rgba(21, 38, 66, 0.10);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f8fa 100%);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+/* =========================
+   Shell Truth — keep AppShell stable
+   Paste at VERY BOTTOM of globals.css
+   ========================= */
+
+.jp-shell {
+  min-height: 100vh;
+  background: var(--jp-bg);
+  color: var(--jp-text);
+}
+
+.jp-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.jp-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+@media (max-width: 980px) {
+  .jp-body { grid-template-columns: 1fr; }
+  .jp-sidenav { display: none; }
+}
+
+.jp-content {
+  padding: 24px;
+}
+
+.jp-content__header,
+.jp-content__body {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.jp-content__header { padding: 24px 24px 12px; }
+.jp-content__body { padding: 0; }
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 650;
+  border: 1px solid var(--jp-border, rgba(0,0,0,0.12));
+  color: var(--jp-text, #111);
+  background: rgba(8, 69, 117, 0.06);
+}
+
+.jp-badge--muted {
+  background: rgba(0,0,0,0.04);
+  color: rgba(0,0,0,0.65);
+}
+/* =========================
+   Locked Application Row Overlay (6.7)
+   ========================= */
+
+.jp-app-row {
+  position: relative;
+}
+
+.jp-app-row__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px;
+  pointer-events: auto;
+}
+
+.jp-app-row__overlay-card {
+  width: min(320px, 92%);
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(8, 69, 117, 0.18);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(21, 38, 66, 0.14);
+  padding: 14px;
+  backdrop-filter: blur(6px);
+}
+
+.jp-app-row__overlay-title {
+  font-weight: 750;
+  margin-bottom: 4px;
+}
+
+.jp-app-row__overlay-sub {
+  color: rgba(21, 38, 66, 0.72);
+  font-size: 13px;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+/* =========================
+   Nautical badge polish
+   ========================= */
+
+/* Base badge (safe defaults; won't break existing badges) */
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 650;
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  /* nautical neutral */
+  color: rgba(8, 69, 117, 0.92);
+  background: rgba(7, 169, 160, 0.12);
+  border: 1px solid rgba(7, 169, 160, 0.28);
+}
+
+/* Muted variant (keeps “Imported (email)” / “Locked” feeling consistent) */
+.jp-badge--muted {
+  color: rgba(21, 38, 66, 0.72);
+  background: rgba(21, 38, 66, 0.06);
+  border: 1px solid rgba(21, 38, 66, 0.12);
+}
+
+/* Optional: add a small "signal dot" if you want it to feel alive
+   - This will show for ANY .jp-badge unless it’s muted.
+   - If you prefer no dot, delete this block. */
+.jp-badge:not(.jp-badge--muted)::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(7, 169, 160, 0.9);
+  box-shadow: 0 0 0 3px rgba(7, 169, 160, 0.18);
+}
+/* =========================================================
+   JobPort — Layout Truth (ADD ONLY, paste at very bottom)
+   Fixes: topbar centering, logo/nav alignment, left-rail noise
+   ========================================================= */
+
+:root {
+  --jp-rail-w: 260px;
+  --jp-content-w: 960px;
+  --jp-gutter: 24px;
+}
+
+/* Make the overall shell grid deterministic */
+.jp-body {
+  display: grid;
+  grid-template-columns: var(--jp-rail-w) 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+/* Keep sidenav visually quiet and prevent random overflow artifacts */
+.jp-sidenav {
+  width: var(--jp-rail-w);
+  flex: 0 0 var(--jp-rail-w);
+  background: rgba(21, 38, 66, 0.02);
+  border-right: 1px solid rgba(21, 38, 66, 0.08);
+  padding: 14px 12px;
+  overflow: hidden;
+}
+
+/* If any stray status pills/badges are leaking into the rail, suppress them */
+.jp-sidenav .jp-badge,
+.jp-sidenav [class*="badge"] {
+  display: none !important;
+}
+
+/* Topbar should align to the combined rail+content grid (not just centered 960) */
+.jp-topbar {
+  height: 64px;
+  background: var(--jp-surface);
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-topbar__inner {
+  /* Rail + content, centered */
+  max-width: calc(var(--jp-rail-w) + var(--jp-content-w));
+  margin: 0 auto;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 var(--jp-gutter);
+}
+
+/* Content column aligned to the same grid */
+.jp-content {
+  padding: var(--jp-gutter);
+}
+
+.jp-content__header,
+.jp-content__body {
+  max-width: var(--jp-content-w);
+  margin: 0 auto;
+}
+
+/* Mobile: rail collapses, topbar/content become full-width */
+@media (max-width: 980px) {
+  .jp-body { grid-template-columns: 1fr; }
+  .jp-sidenav { display: none; }
+
+  .jp-topbar__inner {
+    max-width: var(--jp-content-w);
+  }
+}
+/* =========================
+   Topbar: make it feel like a real header
+   ========================= */
+
+.jp-topbar {
+  background: rgba(243, 239, 213, 0.45); /* sand-tinted wash */
+  backdrop-filter: blur(8px);
+}
+
+.jp-topbar__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Nautical logo mark */
+.jp-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jp-logo__mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
+  background: radial-gradient(circle at 30% 30%, #07a9a0 0%, #084575 70%);
+  box-shadow: 0 6px 16px rgba(21, 38, 66, 0.14);
+}
+
+/* Wordmark: slightly stronger */
+.jp-logo__word {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  color: #152642;
+}
+
+/* Menu button should look consistent with buttons */
+.jp-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(21, 38, 66, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* Avatar: subtle */
+.jp-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(21, 38, 66, 0.12);
+  background: rgba(8, 69, 117, 0.06);
+}
+/* =========================
+   Sidenav nav-item visibility (restore the rail)
+   ========================= */
+
+.jp-sidenav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Cover common NavItem class names without needing to rewrite JS */
+.jp-sidenav button,
+.jp-sidenav a {
+  width: 100%;
+  text-align: left;
+}
+
+/* If NavItem renders a wrapper, make it pill-like */
+.jp-sidenav .jp-navitem,
+.jp-sidenav .jp-nav-item,
+.jp-sidenav [role="button"] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  color: rgba(21, 38, 66, 0.85);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(21, 38, 66, 0.10);
+}
+
+/* Hover */
+.jp-sidenav .jp-navitem:hover,
+.jp-sidenav .jp-nav-item:hover,
+.jp-sidenav [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.80);
+  border-color: rgba(8, 69, 117, 0.18);
+}
+
+/* Active (try both common patterns) */
+.jp-sidenav .is-active,
+.jp-sidenav .active,
+.jp-sidenav [data-state="active"] {
+  background: rgba(7, 169, 160, 0.10);
+  border-color: rgba(7, 169, 160, 0.32);
+  color: rgba(8, 69, 117, 0.95);
+  font-weight: 750;
+}
+/* =========================
+   Left nav — final visibility + hierarchy
+   ========================= */
+
+.jp-sidenav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Base nav item */
+.jp-sidenav .jp-navitem {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  display: flex;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(21, 38, 66, 0.12);
+  color: rgba(21, 38, 66, 0.85);
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Hover */
+.jp-sidenav .jp-navitem:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(8, 69, 117, 0.22);
+}
+
+/* Active state */
+.jp-sidenav .jp-navitem[data-state="active"] {
+  background: rgba(7, 169, 160, 0.12);
+  border-color: rgba(7, 169, 160, 0.35);
+  color: rgba(8, 69, 117, 0.95);
+  font-weight: 750;
+}
+
+/* Label */
+.jp-navitem__label {
+  line-height: 1.2;
+}
+/* =========================
+   Layout seams (finish)
+   ========================= */
+
+/* Clean seam between rail and content (you already have border-right; this refines it) */
+.jp-sidenav {
+  box-shadow: 1px 0 0 rgba(21, 38, 66, 0.04);
+}
+
+/* Subtle seam where topbar meets the body */
+.jp-body {
+  border-top: 1px solid rgba(21, 38, 66, 0.06);
+}
+
+/* Optional: slightly soften the content background so cards pop */
+.jp-content {
+  background: rgba(241, 243, 245, 0.35);
+  border-left: 1px solid rgba(21, 38, 66, 0.04); /* helps when rail bg is close */
+}
+/* =========================
+   Nav active color alignment (match badge teal)
+   ========================= */
+
+.jp-sidenav .jp-navitem[data-state="active"] {
+  background: rgba(7, 169, 160, 0.10);      /* same family as badge */
+  border-color: rgba(7, 169, 160, 0.28);
+  color: rgba(8, 69, 117, 0.95);
+}
+
+.jp-sidenav .jp-navitem[data-state="active"]:hover {
+  background: rgba(7, 169, 160, 0.14);
+  border-color: rgba(7, 169, 160, 0.38);
+}
+/* =========================
+   Topbar grid alignment (rail + content)
+   Fixes: logo/nav feel “floating” or off-grid
+   ========================= */
+
+.jp-topbar__inner {
+  /* override the flex layout */
+  display: grid !important;
+  grid-template-columns: var(--jp-rail-w) var(--jp-content-w);
+  justify-content: center; /* centers the whole 2-col grid in the viewport */
+  align-items: center;
+
+  max-width: none !important; /* let grid define width */
+  padding: 0 var(--jp-gutter) !important;
+  height: 64px;
+}
+
+/* Lock left + right groups into their grid columns */
+.jp-topbar__left {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.jp-topbar__right {
+  grid-column: 2;
+  justify-self: end;
+}
+
+/* Optional but usually needed: a subtle divider where rail ends */
+.jp-topbar__inner::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(calc(-1 * var(--jp-content-w) / 2));
+  /* divider sits at the boundary between rail and content */
+  margin-left: var(--jp-rail-w);
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: rgba(21, 38, 66, 0.08);
+  pointer-events: none;
+}
+
+/* Ensure topbar can position that divider */
+.jp-topbar {
+  position: relative;
+}
+/* =========================
+   Accessibility: focus visibility
+   ========================= */
+
+/* Global focus reset (only when keyboard navigating) */
+:focus-visible {
+  outline: none;
+}
+
+/* Buttons, links, nav items */
+.jp-btn:focus-visible,
+.jp-navitem:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 4px rgba(7, 169, 160, 0.55);
+  border-radius: 12px;
+}
+
+/* Application rows (clickable cards) */
+.jp-app-row:focus-visible {
+  box-shadow:
+    0 0 0 2px rgba(255, 255, 255, 0.9),
+    0 0 0 4px rgba(8, 69, 117, 0.45);
+  border-radius: 14px;
+}
+
+/* Inputs */
+.jp-input:focus-visible {
+  border-color: rgba(7, 169, 160, 0.75);
+  box-shadow:
+    0 0 0 1px rgba(7, 169, 160, 0.75),
+    0 0 0 4px rgba(7, 169, 160, 0.25);
+}
+/* =========================
+   Accessibility: hover + pressed feedback
+   ========================= */
+
+/* Buttons: hover + active */
+.jp-btn {
+  transition: transform 90ms ease, box-shadow 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.jp-btn:hover {
+  box-shadow: 0 10px 22px rgba(21, 38, 66, 0.10);
+  transform: translateY(-1px);
+}
+
+.jp-btn:active {
+  transform: translateY(0px);
+  box-shadow: 0 6px 14px rgba(21, 38, 66, 0.10);
+}
+
+/* Nav items: hover + active/pressed */
+.jp-navitem {
+  transition: transform 90ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.jp-navitem:hover {
+  transform: translateY(-1px);
+}
+
+.jp-navitem:active {
+  transform: translateY(0px);
+}
+
+/* Clickable application rows: hover + active (don’t animate locked overlay) */
+.jp-app-row {
+  transition: transform 90ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.jp-app-row:hover {
+  box-shadow: 0 14px 30px rgba(21, 38, 66, 0.10);
+  transform: translateY(-1px);
+}
+
+.jp-app-row:active {
+  transform: translateY(0px);
+  box-shadow: 0 10px 22px rgba(21, 38, 66, 0.10);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .jp-btn,
+  .jp-navitem,
+  .jp-app-row {
+    transition: none !important;
+  }
+}
+/* =========================
+   Accessibility: contrast tuning (muted + dividers)
+   ========================= */
+
+/* Muted text: slightly darker for readability */
+.jp-muted,
+.jp-faint {
+  color: rgba(21, 38, 66, 0.72) !important;
+}
+
+/* Small metadata text */
+.jp-list-card__meta > span,
+.jp-list-card__foot .jp-muted {
+  color: rgba(21, 38, 66, 0.72);
+}
+
+/* Hairline dividers: slightly more visible */
+.jp-list-card__meta {
+  border-top-color: rgba(21, 38, 66, 0.14) !important;
+}
+
+.jp-sidenav {
+  border-right-color: rgba(21, 38, 66, 0.12) !important;
+}
+
+.jp-topbar {
+  border-bottom-color: rgba(21, 38, 66, 0.12) !important;
+}
+
+.jp-body {
+  border-top-color: rgba(21, 38, 66, 0.10) !important;
+}
+/* =========================
+   Motion: premium micro-interactions (subtle)
+   ========================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Cards: tiny lift + soften shadow */
+  .jp-card,
+  .jp-list-card {
+    transition: transform 140ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .jp-card:hover,
+  .jp-list-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px rgba(21, 38, 66, 0.10);
+  }
+
+  /* Inline notices: gentle fade/settle (works on mount + hover) */
+  .jp-inline-notice {
+    transition: transform 160ms ease, box-shadow 200ms ease, border-color 200ms ease, opacity 200ms ease;
+  }
+
+  .jp-inline-notice:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 30px rgba(21, 38, 66, 0.08);
+  }
+
+  /* Locked overlay card: small “dock-in” feel on hover */
+  .jp-locked-card,
+  .jp-app-row__overlay-card {
+    transition: transform 160ms ease, box-shadow 220ms ease, opacity 200ms ease;
+  }
+
+  .jp-app-row:hover .jp-app-row__overlay-card {
+    transform: translateY(-1px);
+  }
+}
+/* =========================
+   Motion: soften state changes (toast + list)
+   ========================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Toasts: gentle pop-in */
+  .jp-toast,
+  [class*="toast"] {
+    animation: jp-pop-in 180ms ease-out;
+  }
+
+  @keyframes jp-pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* List cards: reduce “snap” when data reloads */
+  .jp-list > li {
+    animation: jp-fade-up 160ms ease-out;
+    margin-bottom: 8px;
+  }
+
+  @keyframes jp-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+/* =========================
+   Alerts: tier headers (CSS-only)
+   Works when list items include severity classes on AlertRow container
+   If not present, this does nothing (safe).
+   ========================= */
+
+/* If AlertRow sets something like .jp-alert--critical etc., add visual grouping */
+.jp-alert--critical,
+.jp-alert--warn,
+.jp-alert--info {
+  position: relative;
+}
+
+/* Add a small label above the first item of each tier when items are adjacent */
+.jp-alert--critical:not(.jp-alert--critical + .jp-alert--critical)::before,
+.jp-alert--warn:not(.jp-alert--warn + .jp-alert--warn)::before,
+.jp-alert--info:not(.jp-alert--info + .jp-alert--info)::before {
+  display: block;
+  margin: 8px 0 6px;
+  padding: 0 16px;           /* aligns label with AlertRow content */
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(21, 38, 66, 0.62);
+  border-bottom: 1px solid rgba(21, 38, 66, 0.06);
+}
+
+/* Label text */
+.jp-alert--critical:not(.jp-alert--critical + .jp-alert--critical)::before { content: "Critical"; }
+.jp-alert--warn:not(.jp-alert--warn + .jp-alert--warn)::before { content: "Warning"; }
+.jp-alert--info:not(.jp-alert--info + .jp-alert--info)::before { content: "Info"; }
+/* =========================
+   Alerts: header tighten + monitoring badge
+   ========================= */
+
+/* Tighten the status row spacing above the card */
+.jp-page .jp-row.jp-mb-2 {
+  margin-bottom: 10px !important;
+}
+
+/* A small status pill for monitoring */
+.jp-monitoring-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 12px;
+  font-weight: 750;
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  color: rgba(8, 69, 117, 0.95);
+  background: rgba(7, 169, 160, 0.10);
+  border: 1px solid rgba(7, 169, 160, 0.28);
+}
+
+.jp-monitoring-pill::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(7, 169, 160, 0.9);
+  box-shadow: 0 0 0 3px rgba(7, 169, 160, 0.18);
+}
+.jp-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+
+.jp-brand-text{
+  font-weight:700;
+  letter-spacing:-0.02em;
+}
+.jp-logo__img { display: block; }
+.jp-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  opacity: 0.9;
+}
+.jp-link:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+.jp-alert-row__top {
+  position: relative;
+}
+
+.jp-alert-row__top::after {
+  content: "›";
+  position: absolute;
+  right: 12px;
+  top: 10px;
+  opacity: 0.45;
+  font-size: 18px;
+  line-height: 1;
+  pointer-events: none;
+}
+.jp-attention {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #b45309; /* amber */
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.jp-attention-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+}
+
+.jp-ctas {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+.jp-attention {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--jp-warn);
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.jp-attention-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--jp-warn);
+}
+
+.jp-ctas {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+

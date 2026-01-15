@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import AppShell from "../../components/AppShell";
-import AlertBanner from "../../components/AlertBanner";
-import { apiFetch } from "../../lib/api";
+import AppShell from "@/components/AppShell";
+import AlertBanner from "@/components/AlertBanner";
+import { apiFetch } from "@/lib/api";
 
 const STATUS_OPTIONS = ["Applied", "Under Review", "Interview", "Offer", "Rejected"];
 

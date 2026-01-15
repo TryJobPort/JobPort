@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { use, useEffect, useMemo, useState } from "react";
 import AlertBanner from "../../../components/AlertBanner";
-import { apiFetch } from "../../../lib/api";
+import { apiFetch } from "@/lib/api";
 
 function safeJsonParse(maybeJson) {
   if (!maybeJson) return null;

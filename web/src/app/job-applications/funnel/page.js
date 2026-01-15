@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { apiFetch } from "../../../lib/api";
+import { apiFetch } from "@/lib/api";
 import AppShell from "../../../components/AppShell";
 
 const COLUMNS = ["Applied", "Interview", "Offer", "Denied"];

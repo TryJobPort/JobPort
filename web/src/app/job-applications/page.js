@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import { apiFetch } from "../../lib/api";
+
 import { useRequireAuth } from "../../lib/requireAuth";
-import AlertBanner from "../../components/AlertBanner";
+import { apiFetch } from "@/lib/api";
+import AlertBanner from "@/components/AlertBanner";
 
 function safeDate(value) {
   if (!value) return null;

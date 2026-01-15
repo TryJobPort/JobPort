@@ -1,6 +1,8 @@
 "use client";
 
-import AppShell from "../../components/AppShell";
+import AppShell from "@/components/AppShell";
+import AlertBanner from "@/components/AlertBanner";
+import { apiFetch } from "@/lib/api";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 

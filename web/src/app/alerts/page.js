@@ -5,14 +5,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import WelcomeCard from "../../components/WelcomeCard";
-import AppShell from "../../components/AppShell";
-import AlertRow from "../../components/AlertRow";
-import { apiFetch } from "../../lib/api";
-import AlertBanner from "../../components/AlertBanner";
-import EmptyState from "../../components/EmptyState";
-import { SkeletonList } from "../../components/Skeletons";
-import { useToast } from "../../components/ToastProvider";
-import { useRequireAuth } from "../../lib/requireAuth";
+import WelcomeCard from "@/components/WelcomeCard";
+import AppShell from "@/components/AppShell";
+import AlertRow from "@/components/AlertRow";
+import { apiFetch } from "@/lib/api";
+import AlertBanner from "@/components/AlertBanner";
+import EmptyState from "@/components/EmptyState";
+import { SkeletonList } from "@/components/Skeletons";
+import { useToast } from "@/components/ToastProvider";
+import { useRequireAuth } from "@/lib/requireAuth";
 
 export default function AlertsPage() {
   const router = useRouter(); // ✅ FIX: router was referenced but never defined

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { apiFetch } from "../../lib/api";
+import { apiFetch } from "@/lib/api";
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));

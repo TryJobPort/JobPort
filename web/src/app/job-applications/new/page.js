@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import AppShell from "../../../components/AppShell";
 import AlertBanner from "../../../components/AlertBanner";
-import { apiFetch } from "../../../lib/api";
+import { apiFetch } from "@/lib/api";
 import { useToast } from "../../../components/ToastProvider";
 
 const STATUSES = ["Applied", "Under Review", "Interview", "Offer", "Rejected"];

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import WelcomeCard from "../../components/WelcomeCard";
 import WelcomeCard from "@/components/WelcomeCard";
 import AppShell from "@/components/AppShell";
 import AlertRow from "@/components/AlertRow";

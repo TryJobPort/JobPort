@@ -3090,3 +3090,1204 @@ button:focus-visible {
   flex-wrap: wrap;
 }
 
+.jp-pin {
+  cursor: pointer;
+  user-select: none;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.jp-card:hover .jp-pin,
+.jp-card:focus-within .jp-pin {
+  opacity: 0.55;
+  transform: scale(1);
+}
+.jp-pin--on {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+.jp-filter-btn {
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.92;
+}
+.jp-filter-btn:hover { opacity: 1; }
+.jp-filter-icon { font-size: 14px; line-height: 1; }
+
+.jp-filters-drawer {
+  margin-top: 12px;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 16px;
+  padding: 14px;
+  background: #fff;
+}
+
+.jp-filter-section { margin-bottom: 14px; }
+.jp-filter-label { font-weight: 900; font-size: 12px; margin-bottom: 8px; opacity: 0.85; }
+
+.jp-worktype-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.jp-chip {
+  border: 1px solid rgba(0,0,0,0.14);
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  opacity: 0.9;
+}
+.jp-chip:hover { opacity: 1; }
+.jp-chip--on {
+  border-color: rgba(0,0,0,0.28);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+}
+
+.jp-salary-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 110px;
+  gap: 10px;
+  align-items: center;
+}
+.jp-salary-num { font-size: 12px; font-weight: 800; opacity: 0.75; }
+.jp-range { width: 100%; }
+
+.jp-source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.jp-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 14px;
+  cursor: pointer;
+  background: #fff;
+}
+.jp-radio:hover { border-color: rgba(0,0,0,0.18); }
+.jp-radio input { display: none; }
+
+.jp-radio-ui {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.22);
+  display: inline-block;
+  position: relative;
+}
+.jp-radio input:checked + .jp-radio-ui::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.75);
+}
+
+.jp-radio-text { font-weight: 800; font-size: 12px; opacity: 0.9; }
+
+.jp-filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+.jp-filter-clear {
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.jp-filter-done {
+  border: 1px solid rgba(0,0,0,0.14);
+  background: #111;
+  color: #fff;
+  border-radius: 12px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.jp-iconbtn { color: rgba(0,0,0,0.85); }
+.jp-filtericon { display: block; }
+
+.jp-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0 12px;
+  opacity: 0.55;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  .jp-divider { pointer-events: none; }
+}
+
+.jp-divider:before,
+.jp-divider:after {
+  content: "";
+  height: 1px;
+  background: rgba(0,0,0,0.10);
+  flex: 1;
+}
+
+.jp-user { position: relative; }
+
+.jp-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: #f3f4f6;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+}
+
+.jp-avatar--initials {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.jp-user { position: relative; }
+
+.jp-user-menu {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  width: 180px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  padding: 6px;
+  z-index: 50;
+}
+
+.jp-user-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.jp-user-item:hover { background: rgba(0,0,0,0.04); }
+
+.jp-user-sep {
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  margin: 6px 0;
+}
+
+.jp-footer {
+  padding: 18px 24px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.jp-user-menu {
+  position: absolute;
+  right: 0;
+  top: 46px;
+  width: 180px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  padding: 6px;
+  z-index: 50;
+}
+
+.jp-user-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.jp-user-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.jp-user-sep {
+  height: 1px;
+  background: rgba(0,0,0,0.06);
+  margin: 6px 0;
+}
+
+.jp-footer {
+  padding: 18px 24px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* -----------------------------
+   AppShell chrome reset (flat / white)
+------------------------------ */
+
+/* overall app background */
+.jp-shell {
+  background: #ffffff;
+}
+
+/* top bar */
+.jp-topbar {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.jp-topbar__inner {
+  background: transparent;
+}
+
+/* left nav / sidebar */
+.jp-sidenav {
+  background: #ffffff;
+  border-right: 1px solid rgba(0,0,0,0.06);
+}
+
+/* center content area background should stay subtle, not beige */
+.jp-body {
+  background: #ffffff;
+}
+
+/* content frame */
+.jp-content {
+  background: transparent;
+}
+
+/* soften any “card-like” chrome around content if it exists */
+.jp-content__header {
+  padding-bottom: 12px;
+}
+
+/* logo: keep it simple */
+.jp-logo__mark {
+  display: none; /* kills the orb if you want ultra-clean */
+}
+
+.jp-logo__word {
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+/* menu icon button: flatter + quieter */
+.jp-icon-btn {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 10px;
+  opacity: 0.7;
+}
+.jp-icon-btn:hover {
+  opacity: 1;
+}
+
+/* avatar should not be loud */
+.jp-avatar {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+/* footer: keep it subtle */
+.jp-footer {
+  background: #ffffff;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Single-column shell (no left nav) */
+.jp-body {
+  display: block;
+}
+
+.jp-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+}
+
+/* Buttons for logged-out state */
+.jp-btn {
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  background: #fff;
+}
+
+.jp-btn--primary {
+  background: #0b5cff; /* matches your blue CTA vibe */
+  border-color: #0b5cff;
+  color: #fff;
+}
+
+.jp-btn--ghost {
+  background: transparent;
+}
+
+/* App background */
+.jp-shell {
+  background: #f5f6f8; /* soft gray */
+}
+
+/* Ensure dashboard content floats on gray */
+.jp-page,
+.jp-content,
+main {
+  background: transparent;
+}
+
+/* Swim lanes / cards should remain white */
+.jp-card,
+.jp-lane,
+.jp-column {
+  background: #ffffff;
+}
+
+/* Subtle separation without borders everywhere */
+.jp-lane {
+  border-radius: 14px;
+}
+
+/* Optional: slightly darker divider between lanes */
+.jp-lane + .jp-lane {
+  box-shadow: inset 0 1px 0 rgba(0,0,0,0.04);
+}
+
+/* Header auth buttons */
+.jp-login {
+  appearance: none;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.jp-login:hover {
+  background: #f5f6f8;
+}
+
+/* Header secondary auth button (Log in) */
+header .jp-link {
+  appearance: none;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+header .jp-link:hover {
+  background: #f5f6f8;
+}
+
+/* Normalize header auth button sizing */
+header .jp-btn,
+header .jp-link {
+  height: 40px;
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 999px;
+}
+
+.jp-btn--secondary {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.jp-btn--secondary:hover {
+  background: #f5f6f8;
+}
+
+/* Header secondary auth button (Log in) */
+header .jp-link {
+  appearance: none;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+header .jp-link:hover {
+  background: #f5f6f8;
+}
+
+/* Auth pages (Login / Signup) */
+.jp-auth-wrap {
+  max-width: 560px;
+  margin: 72px auto;
+  padding: 0 16px;
+}
+
+.jp-auth-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.jp-auth-title {
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.2px;
+  margin: 0 0 6px;
+}
+
+.jp-auth-sub {
+  margin: 0 0 16px;
+  color: rgba(15, 23, 42, 0.72);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.jp-auth-err {
+  color: #b91c1c;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.jp-auth-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #ffffff;
+  font-weight: 800;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.jp-auth-google:hover {
+  background: #f5f6f8;
+}
+
+.jp-auth-googleMark {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0,0,0,0.18);
+  font-size: 12px;
+  font-weight: 900;
+  opacity: 0.85;
+}
+
+.jp-auth-fine {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.62);
+  margin: 12px 0 0;
+  line-height: 1.4;
+}
+
+.jp-auth-links {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jp-auth-link {
+  font-size: 13px;
+  color: rgba(15, 23, 42, 0.78);
+}
+
+.jp-auth-link:hover {
+  color: rgba(15, 23, 42, 0.92);
+}
+
+/* Plans page */
+.jp-plans-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+}
+
+.jp-plans-kicker {
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.jp-plans-title {
+  margin: 6px 0 0;
+  font-size: 26px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+}
+
+.jp-plans-sub {
+  margin-top: 6px;
+  color: rgba(15, 23, 42, 0.62);
+  max-width: 760px;
+}
+
+.jp-plans-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.jp-plans-grid {
+  display: flex;
+  gap: 18px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.jp-plans-card {
+  flex: 1 1 360px;
+  min-width: 320px;
+}
+
+.jp-plans-pro {
+  border-color: rgba(11, 92, 255, 0.25);
+}
+
+.jp-plans-plus {
+  margin-bottom: 2px;
+}
+
+.jp-plans-list {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.6;
+  color: rgba(15, 23, 42, 0.62);
+}
+
+.jp-plans-cta {
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.jp-plans-note {
+  font-size: 12px;
+}
+
+/* Google Sign-In (brand compliant, light theme) */
+.jp-google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 44px;
+
+  background: #ffffff;
+  color: #3c4043;
+
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Roboto, Arial, sans-serif;
+
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.jp-google-btn:hover {
+  background: #f7f8f8;
+}
+
+.jp-google-icon {
+  width: 18px;
+  height: 18px;
+  background-image: url("/google/g-logo.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Onboarding */
+.jp-onboard-wrap {
+  max-width: 680px;
+  margin: 96px auto;
+  padding: 0 16px;
+}
+
+.jp-onboard-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+}
+
+.jp-onboard-title {
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  margin: 0 0 12px;
+}
+
+.jp-onboard-sub {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(15, 23, 42, 0.72);
+  margin: 0 0 18px;
+}
+
+.jp-onboard-list {
+  margin: 0 0 24px;
+  padding-left: 18px;
+  line-height: 1.6;
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.jp-onboard-cta {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+}
+
+.jp-onboard-fine {
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.6);
+  text-align: center;
+}
+
+/* Onboarding */
+.jp-onboard-wrap {
+  max-width: 680px;
+  margin: 96px auto;
+  padding: 0 16px;
+}
+
+.jp-onboard-card {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+}
+
+.jp-onboard-kicker {
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.55);
+  margin-bottom: 10px;
+}
+
+.jp-onboard-title {
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+  margin: 0 0 12px;
+}
+
+.jp-onboard-sub {
+  font-size: 15px;
+  line-height: 1.5;
+  color: rgba(15, 23, 42, 0.72);
+  margin: 0 0 18px;
+}
+
+.jp-onboard-list {
+  margin: 0 0 22px;
+  padding-left: 18px;
+  line-height: 1.6;
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.jp-onboard-cta {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+  border-radius: 8px; /* matches Google button spec better than pill */
+}
+
+.jp-onboard-fine {
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.6);
+  text-align: center;
+}
+
+/* Plans (Aura-like, simplified) */
+.jp-plans {
+  padding: 24px 0 48px;
+}
+
+.jp-plans__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.jp-plans__kicker {
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.jp-plans__title {
+  margin: 6px 0 0;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+}
+
+.jp-plans__sub {
+  margin: 8px 0 0;
+  color: rgba(15, 23, 42, 0.62);
+  max-width: 760px;
+}
+
+.jp-plans__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .jp-plans__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.jp-plansCard {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.10);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.jp-plansCard--pro {
+  border-color: rgba(11, 92, 255, 0.22);
+}
+
+.jp-plansCard__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(11, 92, 255, 0.10);
+  color: rgba(11, 92, 255, 0.92);
+  margin-bottom: 14px;
+}
+
+.jp-plansCard__badge--pro {
+  background: rgba(15, 23, 42, 0.06);
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.jp-plansCard__plan {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+}
+
+.jp-plansCard__price {
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-top: 10px;
+  font-weight: 900;
+}
+
+.jp-plansCard__per {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(15, 23, 42, 0.62);
+  margin-left: 6px;
+}
+
+.jp-plansCard__desc {
+  margin-top: 10px;
+  color: rgba(15, 23, 42, 0.62);
+  line-height: 1.5;
+}
+
+.jp-plansCard__cta {
+  width: 100%;
+  height: 46px;
+  margin-top: 16px;
+  font-size: 15px;
+}
+
+.jp-plansCard__fine {
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.60);
+  text-align: center;
+}
+
+.jp-plansCard__list {
+  margin: 18px 0 0;
+  padding-left: 18px;
+  line-height: 1.65;
+  color: rgba(15, 23, 42, 0.68);
+}
+
+.jp-plans__foot {
+  margin-top: 16px;
+}
+
+.jp-plans__footNote {
+  margin: 0;
+  color: rgba(15, 23, 42, 0.56);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Locked Pro cards */
+.jp-card--locked {
+  position: relative;
+  overflow: hidden;
+}
+
+.jp-card--locked .jp-card__body {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+.jp-card__lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jp-card__lockText {
+  background: rgba(255,255,255,0.94);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Pro preview content (inside locked cards) */
+.jp-preview {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.jp-metric {
+  padding: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  background: rgba(245,246,248,0.55);
+}
+
+.jp-metric__label {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  font-weight: 800;
+  color: rgba(15, 23, 42, 0.55);
+  text-transform: uppercase;
+}
+
+.jp-metric__value {
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
+}
+
+.jp-metric__sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+/* Footer */
+.jp-footer {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  background: #ffffff;
+}
+
+.jp-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jp-footer-left {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.jp-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jp-footer-right a {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.7);
+  text-decoration: none;
+}
+
+.jp-footer-right a:hover {
+  color: rgba(15, 23, 42, 0.95);
+  text-decoration: underline;
+}
+
+.jp-footer-sep {
+  font-size: 12px;
+  color: rgba(15, 23, 42, 0.35);
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .jp-footer-inner {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.wrap{
+  min-height: 100vh;
+  background: #f6f7fb;
+  color: #0f172a;
+  padding: 48px 20px 72px;
+}
+
+.container{
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  text-decoration:none;
+}
+
+.brandMark{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #2563eb; /* fallback “JobPort blue” */
+  box-shadow: 0 0 0 6px rgba(37,99,235,0.10);
+}
+
+.brandText{
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0f172a;
+}
+
+.back{
+  font-size: 14px;
+  color: rgba(15,23,42,0.70);
+  text-decoration:none;
+}
+.back:hover{ color: rgba(15,23,42,0.95); }
+
+.card{
+  background: #ffffff;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(15,23,42,0.06);
+  overflow: hidden;
+}
+
+.header{
+  padding: 28px 28px 18px;
+  border-bottom: 1px solid rgba(15,23,42,0.06);
+  background: linear-gradient(to bottom, rgba(15,23,42,0.02), rgba(255,255,255,0));
+}
+
+.h1{
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.sub{
+  margin: 10px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(15,23,42,0.72);
+  max-width: 70ch;
+}
+
+.meta{
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(15,23,42,0.55);
+}
+
+.toc{
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed rgba(15,23,42,0.12);
+}
+
+.tocLabel{
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(15,23,42,0.55);
+  margin-bottom: 10px;
+}
+
+.tocChips{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,0.10);
+  background: rgba(15,23,42,0.02);
+  color: rgba(15,23,42,0.80);
+  font-size: 13px;
+  text-decoration: none;
+}
+.chip:hover{
+  border-color: rgba(37,99,235,0.30);
+  background: rgba(37,99,235,0.06);
+  color: #0f172a;
+}
+
+.body{
+  padding: 22px 28px 28px;
+}
+
+.body h2{
+  margin: 22px 0 10px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.body p{
+  margin: 10px 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(15,23,42,0.82);
+  max-width: 78ch;
+}
+
+.body ul{
+  margin: 10px 0 10px 18px;
+  color: rgba(15,23,42,0.82);
+  line-height: 1.75;
+  font-size: 15px;
+}
+
+.body a{
+  color: #2563eb;
+  text-decoration: none;
+}
+.body a:hover{ text-decoration: underline; }
+
+.hr{
+  height: 1px;
+  background: rgba(15,23,42,0.08);
+  margin: 18px 0;
+}
+
+.callout{
+  margin-top: 18px;
+  padding: 14px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(37,99,235,0.16);
+  background: rgba(37,99,235,0.06);
+  color: rgba(15,23,42,0.85);
+  font-size: 14px;
+  line-height: 1.6;
+}
+

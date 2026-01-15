@@ -52,7 +52,7 @@ export default function ImportingPage() {
 
         // As soon as we have real job applications, move to the wow moment
         if (Number(json?.applications_found || 0) > 0) {
-          router.replace("/job-applications/funnel?welcome=1");
+          router.replace("/dashboard?welcome=1");
         }
       } catch (e) {
         if (cancelled) return;
@@ -232,7 +232,7 @@ export default function ImportingPage() {
 
             <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
               <Link
-                href="/job-applications/funnel"
+                href="/dashboard"
                 style={{
                   display: "inline-flex",
                   alignItems: "center",

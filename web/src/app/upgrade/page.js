@@ -5,21 +5,6 @@ import { useRouter } from "next/navigation";
 
 import AppShell from "../../components/AppShell";
 
-{!demoMode && (
-  <div
-    style={{
-      marginTop: 12,
-      padding: 12,
-      borderRadius: 14,
-      border: "1px solid rgba(0,0,0,0.12)",
-      background: "rgba(0,0,0,0.04)",
-    }}
-  >
-    Free plan: 1 tracked job application.{" "}
-    <Link href="/upgrade">Upgrade to keep tracking</Link>.
-  </div>
-)}
-
 export default function UpgradePage() {
   const router = useRouter();
 
@@ -47,15 +32,15 @@ export default function UpgradePage() {
             <div className="jp-card__header">
               <div className="jp-card__title jp-h2">No-sweat trial</div>
               <div className="jp-card__subtitle">
-                Try monitoring with a fuller dashboard. Upgrade later when you’re confident.
+                You’ve seen JobPort detect real movement. Pro helps you understand how and why it’s happening.
               </div>
 
               <div className="jp-stack jp-mt-4">
                 <div className="jp-muted">Trial includes:</div>
                 <ul className="jp-muted" style={{ paddingLeft: 18 }}>
-                  <li>Unlock up to 5 job applications (testing mode)</li>
-                  <li>Status-change alerts</li>
-                  <li>Background monitoring preview</li>
+                  <li>Track up to 5 job applications</li>
+                  <li>See why applications move (signals)</li>
+                  <li>Preview the full flow view</li>
                 </ul>
 
                 <div className="jp-muted jp-mt-3">

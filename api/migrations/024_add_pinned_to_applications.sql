@@ -1,0 +1,2 @@
+ALTER TABLE applications
+ADD COLUMN pinned INTEGER DEFAULT 0;

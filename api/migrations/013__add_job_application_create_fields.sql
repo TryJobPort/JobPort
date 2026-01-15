@@ -1,0 +1,2 @@
+-- NO-OP
+-- Columns already exist in this database

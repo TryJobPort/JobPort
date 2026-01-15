@@ -1,65 +1,51 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-
+import React, { useMemo, useState } from "react";
 import AppShell from "../../../components/AppShell";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
+
 export default function OnboardingConnectPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [starting, setStarting] = useState(false);
 
-  useEffect(() => {
-    try {
-      const e = localStorage.getItem("jp_apply_email") || "";
-      setEmail(e);
-    } catch {}
-  }, []);
+  const oauthUrl = useMemo(() => `${API_BASE}/auth/google/start`, []);
 
-  const masked = useMemo(() => {
-    const e = String(email || "").trim();
-    if (!e.includes("@")) return e || "—";
-    const [user, domain] = e.split("@");
-    if (!user) return e;
-    const safeUser =
-      user.length <= 2 ? `${user[0] || ""}*` : `${user[0]}***${user[user.length - 1]}`;
-    return `${safeUser}@${domain}`;
-  }, [email]);
-
-  function continueToImport() {
-    router.push("/onboarding/importing");
+  function startGoogle() {
+    setStarting(true);
+    window.location.href = oauthUrl; // API callback redirects to /importing
   }
 
   return (
-    <AppShell title="Connect email">
+    <AppShell title="Connect Gmail">
       <div className="jp-page">
         <div className="jp-stack">
           <div className="jp-card">
             <div className="jp-card__header">
-              <div className="jp-card__title">Email connection</div>
+              <div className="jp-card__title">Connect Gmail</div>
               <div className="jp-card__subtitle">
-                We’ll support Google and Microsoft sign-in paths later. For now, we’ll simulate an import.
+                JobPort reads job signals from your inbox to build your job pipeline automatically.
+                Read-only. No sending. No modifying.
               </div>
+            </div>
 
-              <div className="jp-mt-4">
-                <div className="jp-muted">Using:</div>
-                <div className="jp-row jp-mt-2" style={{ alignItems: "center" }}>
-                  <span className="jp-badge">{masked || "—"}</span>
-                  <span className="jp-spacer" />
-                  <button className="jp-btn jp-btn--primary" type="button" onClick={continueToImport}>
-                    Continue
-                  </button>
-                </div>
+            <div style={{ padding: "0 18px 18px" }}>
+              <button
+                className="jp-btn jp-btn--primary"
+                type="button"
+                onClick={startGoogle}
+                disabled={starting}
+              >
+                {starting ? "Opening Google…" : "Continue with Google"}
+              </button>
 
-                <div className="jp-muted jp-mt-4">
-                  Nothing is connected yet. This step is a preview of the flow.
-                </div>
+              <div className="jp-muted" style={{ marginTop: 10 }}>
+                You’ll be redirected back and we’ll start importing immediately.
               </div>
             </div>
           </div>
 
           <div className="jp-muted">
-            Next: we’ll build your dashboard and lock most job applications as a free-plan preview.
+            Tip: Once Gmail is connected, you shouldn’t have to manually create job applications.
           </div>
         </div>
       </div>

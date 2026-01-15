@@ -27,6 +27,33 @@ function formatRelativeFromNow(date) {
   return ms >= 0 ? `in ${days}d` : `${days}d ago`;
 }
 
+function formatWithTz(date) {
+  if (!date) return "";
+  try {
+    return date.toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short",
+    });
+  } catch {
+    return date.toLocaleString();
+  }
+}
+
+function meetingLabel(url) {
+  if (!url) return "Join meeting";
+  const u = String(url).toLowerCase();
+  if (u.includes("meet.google.com")) return "Join Meet";
+  if (u.includes("zoom.us")) return "Join Zoom";
+  if (u.includes("teams.microsoft.com")) return "Join Teams";
+  if (u.includes("webex.com")) return "Join Webex";
+  if (u.includes("calendar.google.com")) return "Open Calendar";
+  if (u.includes("outlook.office.com") || u.includes("outlook.live.com")) return "Open Calendar";
+  return "Join meeting";
+}
+
 function stageBucket(status) {
   const s = String(status || "").toLowerCase();
   if (s.includes("offer")) return "Offer";
@@ -35,48 +62,15 @@ function stageBucket(status) {
   return "Applied";
 }
 
-// Local demo fallback (keeps list usable even if backend requires auth)
-const DEMO_APPLICATIONS = [
-  {
-    id: "demo-1",
-    company: "Acme Corp",
-    role: "Product Manager",
-    portal: "Greenhouse",
-    status: "Applied",
-    url: "https://example.com",
-    last_bearing_at: new Date(Date.now() - 1000 * 60 * 60 * 10).toISOString(),
-  },
-  {
-    id: "demo-2",
-    company: "Coinbase",
-    role: "Director of Product",
-    portal: "Coinbase",
-    status: "Offer",
-    url: "https://example.com",
-    last_bearing_at: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
-  },
-  {
-    id: "demo-3",
-    company: "Spotify",
-    role: "Group Product Manager",
-    portal: "Spotify Careers",
-    status: "Interview",
-    url: "https://example.com",
-    last_bearing_at: new Date(Date.now() - 1000 * 60 * 60 * 30).toISOString(),
-    next_interview_at: new Date(Date.now() + 1000 * 60 * 60 * 48).toISOString(),
-    next_interview_link: "https://example.com",
-    next_interview_email_id: null,
-  },
-  {
-    id: "demo-4",
-    company: "Meta",
-    role: "Senior PM",
-    portal: "Meta",
-    status: "Denied",
-    url: "https://example.com",
-    last_bearing_at: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
-  },
-];
+function prettySignal(signal) {
+  if (!signal) return "—";
+  if (typeof signal === "string") return signal;
+  try {
+    return JSON.stringify(signal, null, 2);
+  } catch {
+    return String(signal);
+  }
+}
 
 export default function JobApplicationsPage() {
   const router = useRouter();
@@ -93,15 +87,37 @@ export default function JobApplicationsPage() {
 
   const [data, setData] = useState(null);
   const [err, setErr] = useState("");
-  const [demoMode, setDemoMode] = useState(false);
 
   const [scanningId, setScanningId] = useState("");
   const [scanErrById, setScanErrById] = useState({});
   const [scanResultById, setScanResultById] = useState({});
 
-  async function load() {
+  // Explanation panel state
+  const [selectedAppId, setSelectedAppId] = useState("");
+  const [explainLoading, setExplainLoading] = useState(false);
+  const [explainErr, setExplainErr] = useState("");
+  const [explanation, setExplanation] = useState(null);
+
+  async function loadApplications() {
     const json = await apiFetch("/applications");
     setData(json);
+  }
+
+  async function loadExplanation(appId) {
+    setSelectedAppId(appId);
+    setExplainLoading(true);
+    setExplainErr("");
+    setExplanation(null);
+
+    try {
+      const json = await apiFetch(`/applications/${appId}/explanation`);
+      if (!json?.ok) throw new Error(json?.error || "Failed to load explanation");
+      setExplanation(json.explanation || null);
+    } catch (e) {
+      setExplainErr(e.message || "Failed to load explanation");
+    } finally {
+      setExplainLoading(false);
+    }
   }
 
   // Boot load (guarded while auth resolves)
@@ -114,16 +130,18 @@ export default function JobApplicationsPage() {
       try {
         setErr("");
         const json = await apiFetch("/applications");
-        if (!cancelled) {
-          setDemoMode(false);
-          setData(json);
+        if (cancelled) return;
+        setData(json);
+
+        // Auto-select first item (if any) to make "why did this move?" immediate.
+        const firstId = json?.applications?.[0]?.id;
+        if (firstId) {
+          loadExplanation(firstId);
         }
       } catch (e) {
         if (!cancelled) {
-          // Keep moving even if backend requires auth or is unavailable
-          setDemoMode(true);
-          setErr("");
-          setData({ ok: true, applications: DEMO_APPLICATIONS });
+          setErr(e.message || "Failed to load job applications");
+          setData(null);
         }
       }
     }
@@ -132,6 +150,7 @@ export default function JobApplicationsPage() {
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authLoading]);
 
   const allApps = data?.applications || [];
@@ -162,7 +181,12 @@ export default function JobApplicationsPage() {
         },
       }));
 
-      await load();
+      await loadApplications();
+
+      // If you scanned the selected app, refresh its explanation as well.
+      if (selectedAppId && selectedAppId === appId) {
+        await loadExplanation(appId);
+      }
     } catch (e) {
       setScanErrById((m) => ({ ...m, [appId]: e.message }));
     } finally {
@@ -178,214 +202,288 @@ export default function JobApplicationsPage() {
   if (authLoading) return null;
 
   return (
-    <main style={{ padding: 24, maxWidth: 960, margin: "0 auto" }}>
-      <header style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <h1 style={{ margin: 0 }}>Job applications</h1>
-        <Link href="/job-applications/funnel">Funnel</Link>
-        <Link href="/job-applications/new">Track a job application</Link>
+    <main style={{ padding: 24, maxWidth: 1200, margin: "0 auto" }}>
+      <header style={{ display: "flex", alignItems: "center", gap: 12, justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <h1 style={{ margin: 0 }}>Job applications</h1>
+          <Link href="/dashboard" style={{ fontSize: 14 }}>
+            ← Back to Dashboard
+          </Link>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {activeStage ? (
+            <>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "6px 10px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(0,0,0,0.12)",
+                  background: "rgba(255,255,255,0.95)",
+                  fontSize: 13,
+                }}
+              >
+                Filtered: <strong>{activeStage}</strong> ({filteredApps.length})
+              </span>
+
+              <button
+                type="button"
+                onClick={clearFilter}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  background: "white",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+              >
+                Clear
+              </button>
+            </>
+          ) : null}
+        </div>
       </header>
 
-      {demoMode && (
-        <div
+      <div style={{ marginTop: 16 }}>
+        {err && <p style={{ color: "crimson" }}>Error: {err}</p>}
+        {!data && !err && <p>Loading…</p>}
+      </div>
+
+      <div style={{ marginTop: 12, display: "flex", gap: 16, alignItems: "flex-start" }}>
+        {/* LEFT: list */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {data && filteredApps.length === 0 && (
+            <p style={{ opacity: 0.8 }}>
+              {activeStage ? `No job applications in “${activeStage}”.` : "No job applications tracked yet."}
+            </p>
+          )}
+
+          {filteredApps.length > 0 && (
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              {filteredApps.map((a) => {
+                const scanning = scanningId === a.id;
+                const scanErr = scanErrById[a.id];
+                const scanRes = scanResultById[a.id];
+
+                const isSelected = selectedAppId === a.id;
+
+                return (
+                  <li key={a.id}>
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => loadExplanation(a.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") loadExplanation(a.id);
+                      }}
+                      style={{
+                        border: isSelected ? "2px solid rgba(0,0,0,0.35)" : "1px solid rgba(0,0,0,0.12)",
+                        borderRadius: 16,
+                        padding: 12,
+                        background: "white",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+                            <strong style={{ fontSize: 15 }}>{a.company}</strong>
+                            <span style={{ opacity: 0.9 }}>— {a.role}</span>
+                          </div>
+
+                          <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4 }}>
+                            Status: <strong>{a.status}</strong>
+                            {a.portal ? ` · Portal: ${a.portal}` : ""}
+                            {a.url ? (
+                              <>
+                                {" "}
+                                ·{" "}
+                                <a href={a.url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                                  Open
+                                </a>
+                              </>
+                            ) : null}
+                            {" · "}
+                            <Link href={`/job-applications/${a.id}`} onClick={(e) => e.stopPropagation()}>
+                              View history
+                            </Link>
+
+                            {/* Meeting CTA (minimal): show only when link exists */}
+                            {a.next_interview_link ? (
+                              <>
+                                {" · "}
+                                <a
+                                  href={a.next_interview_link}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  style={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    padding: "4px 8px",
+                                    borderRadius: 10,
+                                    border: "1px solid rgba(0,0,0,0.15)",
+                                    textDecoration: "none",
+                                    fontWeight: 700,
+                                    opacity: 0.95,
+                                  }}
+                                  title="Join meeting"
+                                >
+                                  Join meeting
+                                </a>
+                              </>
+                            ) : null}
+                          </div>
+
+                          <div style={{ fontSize: 12, opacity: 0.75, marginTop: 8 }}>
+                            {a.last_bearing_at
+                              ? `Last scanned: ${new Date(a.last_bearing_at).toLocaleString()}`
+                              : "Last scanned: —"}
+                            {a.last_drift_detected_at
+                              ? ` · Last change detected: ${new Date(a.last_drift_detected_at).toLocaleString()}`
+                              : ""}
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              scanNow(a.id);
+                            }}
+                            disabled={scanning}
+                            style={{
+                              padding: "8px 10px",
+                              cursor: scanning ? "not-allowed" : "pointer",
+                              opacity: scanning ? 0.7 : 1,
+                              borderRadius: 12,
+                              border: "1px solid rgba(0,0,0,0.15)",
+                              background: "white",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {scanning ? "Scanning…" : "Scan now"}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: 10 }}>
+                        {scanErr && (
+                          <p style={{ color: "crimson", margin: 0 }}>
+                            Scan error: {scanErr}
+                          </p>
+                        )}
+
+                        {scanRes?.alert && <AlertBanner alert={scanRes.alert} />}
+
+                        {scanRes && !scanRes.alert && !scanErr && (
+                          <p style={{ margin: 0, fontSize: 13, opacity: 0.85 }}>
+                            No changes detected since the last scan.
+                            {scanRes.checkedAt ? ` (${new Date(scanRes.checkedAt).toLocaleString()})` : ""}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+
+        {/* RIGHT: explanation panel */}
+        <aside
           style={{
-            marginTop: 14,
+            width: 460,
+            flex: "0 0 460px",
             border: "1px solid rgba(0,0,0,0.12)",
             borderRadius: 16,
             padding: 14,
             background: "white",
           }}
         >
-          <strong>Demo mode</strong>
-          <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4 }}>
-            This list is using a preview dataset. Option 2 will connect Google (read-only) to build this from your real inbox.
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 }}>
+            <div style={{ fontWeight: 700 }}>Why did this job move?</div>
+            {selectedAppId ? <span style={{ fontSize: 12, opacity: 0.6 }}>app: {selectedAppId}</span> : null}
           </div>
-        </div>
-      )}
 
-      {activeStage && (
-        <div style={{ marginTop: 14, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(0,0,0,0.12)",
-              background: "rgba(255,255,255,0.95)",
-              fontSize: 13,
-            }}
-          >
-            Filtered: <strong>{activeStage}</strong> ({filteredApps.length})
-          </span>
+          <div style={{ marginTop: 10 }}>
+            {!selectedAppId && (
+              <div style={{ opacity: 0.7, fontSize: 13 }}>
+                Select a job application to see the triggering email and detected signal.
+              </div>
+            )}
 
-          <button
-            type="button"
-            onClick={clearFilter}
-            style={{
-              padding: "6px 10px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.15)",
-              background: "white",
-              cursor: "pointer",
-              fontWeight: 600,
-            }}
-          >
-            Clear filter
-          </button>
-        </div>
-      )}
+            {selectedAppId && explainLoading && <div style={{ opacity: 0.7, fontSize: 13 }}>Loading…</div>}
 
-      <div style={{ marginTop: 16 }}>
-        {err && <p style={{ color: "crimson" }}>Error: {err}</p>}
+            {selectedAppId && !explainLoading && explainErr && (
+              <div style={{ color: "crimson", fontSize: 13 }}>{explainErr}</div>
+            )}
 
-        {!data && !err && <p>Loading…</p>}
+            {selectedAppId && !explainLoading && !explainErr && !explanation && (
+              <div style={{ opacity: 0.7, fontSize: 13 }}>
+                No explanation yet for this job application. (We haven’t linked a triggering email to a status change.)
+              </div>
+            )}
 
-        {filteredApps.length === 0 && data && (
-          <p style={{ opacity: 0.8 }}>{activeStage ? `No job applications in “${activeStage}”.` : "No job applications tracked yet."}</p>
-        )}
-
-        {filteredApps.length > 0 && (
-          <>
-            <ul style={{ paddingLeft: 18 }}>
-              {filteredApps.map((a) => {
-                const scanning = scanningId === a.id;
-                const scanErr = scanErrById[a.id];
-                const scanRes = scanResultById[a.id];
-
-                const interviewAt = safeDate(a.next_interview_at);
-                const interviewIsUpcoming = !!interviewAt && interviewAt.getTime() > Date.now();
-                const interviewRel = interviewAt ? formatRelativeFromNow(interviewAt) : "";
-
-                return (
-                  <li key={a.id} style={{ marginBottom: 14 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ flex: 1 }}>
-                        <div>
-                          <strong>{a.company}</strong> — {a.role}
-                        </div>
-
-                        <div style={{ fontSize: 13, opacity: 0.8 }}>
-                          Status: {a.status}
-                          {a.portal ? ` · Portal: ${a.portal}` : ""}{" "}
-                          {a.url ? (
-                            <>
-                              ·{" "}
-                              <a href={a.url} target="_blank" rel="noreferrer">
-                                Open
-                              </a>
-                            </>
-                          ) : null}
-                          {" · "}
-                          <Link href={`/job-applications/${a.id}`}>View history</Link>
-                        </div>
-
-                        {interviewIsUpcoming && (
-                          <div style={{ marginTop: 8 }}>
-                            <span
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 8,
-                                padding: "6px 10px",
-                                borderRadius: 999,
-                                border: "1px solid rgba(0,0,0,0.12)",
-                                fontSize: 12,
-                                background: "rgba(255,255,255,0.7)",
-                              }}
-                            >
-                              <strong style={{ fontWeight: 600 }}>Upcoming interview</strong>
-                              <span style={{ opacity: 0.85 }}>
-                                {interviewAt.toLocaleString()} ({interviewRel})
-                              </span>
-                            </span>
-
-                            <div style={{ marginTop: 8, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                              {a.next_interview_link && (
-                                <a
-                                  href={a.next_interview_link}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    padding: "6px 10px",
-                                    borderRadius: 10,
-                                    border: "1px solid rgba(0,0,0,0.15)",
-                                    textDecoration: "none",
-                                  }}
-                                >
-                                  Join meeting
-                                </a>
-                              )}
-
-                              {a.next_interview_email_id && (
-                                <Link
-                                  href={`/emails/${a.next_interview_email_id}`}
-                                  style={{
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    padding: "6px 10px",
-                                    borderRadius: 10,
-                                    border: "1px solid rgba(0,0,0,0.15)",
-                                    textDecoration: "none",
-                                  }}
-                                >
-                                  Open email
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        <div style={{ fontSize: 12, opacity: 0.75, marginTop: 6 }}>
-                          {a.last_bearing_at ? `Last scanned: ${new Date(a.last_bearing_at).toLocaleString()}` : "Last scanned: —"}
-                          {a.last_drift_detected_at
-                            ? ` · Last change detected: ${new Date(a.last_drift_detected_at).toLocaleString()}`
-                            : ""}
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => scanNow(a.id)}
-                        disabled={demoMode || scanning}
-                        title={demoMode ? "Scanning is disabled in demo mode" : "Scan this job application now"}
-                        style={{
-                          padding: "8px 10px",
-                          cursor: demoMode || scanning ? "not-allowed" : "pointer",
-                          opacity: demoMode ? 0.6 : 1,
-                        }}
-                      >
-                        {scanning ? "Scanning…" : "Scan now"}
-                      </button>
+            {selectedAppId && !explainLoading && !explainErr && explanation && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {/* Triggering email */}
+                <section>
+                  <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 6 }}>Triggering email</div>
+                  {explanation.email ? (
+                    <div style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 12, padding: 10 }}>
+                      <div style={{ fontWeight: 700 }}>{explanation.email.subject || "(no subject)"}</div>
+                      <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>{explanation.email.from}</div>
+                      <div style={{ fontSize: 12, opacity: 0.6, marginTop: 2 }}>{explanation.email.receivedAt}</div>
                     </div>
+                  ) : (
+                    <div style={{ opacity: 0.7, fontSize: 13 }}>Not available (no linked email found).</div>
+                  )}
+                </section>
 
-                    <div style={{ marginTop: 10 }}>
-                      {scanErr && (
-                        <p style={{ color: "crimson", margin: 0 }}>
-                          Scan error: {scanErr}
-                        </p>
-                      )}
+                {/* Extracted signal */}
+                <section>
+                  <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 6 }}>Extracted signal</div>
+                  <pre
+                    style={{
+                      margin: 0,
+                      whiteSpace: "pre-wrap",
+                      fontSize: 12,
+                      lineHeight: 1.35,
+                      padding: 10,
+                      borderRadius: 12,
+                      border: "1px solid rgba(0,0,0,0.10)",
+                      background: "rgba(0,0,0,0.02)",
+                      maxHeight: 220,
+                      overflow: "auto",
+                    }}
+                  >
+                    {prettySignal(explanation.signal)}
+                  </pre>
+                </section>
 
-                      {scanRes?.alert && <AlertBanner alert={scanRes.alert} />}
-
-                      {scanRes && !scanRes.alert && !scanErr && (
-                        <p style={{ margin: 0, fontSize: 13, opacity: 0.85 }}>
-                          No changes detected since the last scan.
-                          {scanRes.checkedAt ? ` (${new Date(scanRes.checkedAt).toLocaleString()})` : ""}
-                        </p>
-                      )}
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <p style={{ marginTop: 16, fontSize: 13, opacity: 0.85 }}>
-              Free plan: 1 tracked job application. <Link href="/upgrade">Upgrade to track more</Link>.
-            </p>
-          </>
-        )}
+                {/* Status change reason */}
+                <section>
+                  <div style={{ fontSize: 12, opacity: 0.65, marginBottom: 6 }}>Status change reason</div>
+                  <div style={{ fontWeight: 800 }}>
+                    {(explanation.prevStatus || "Unknown")} → {(explanation.nextStatus || "Unknown")}
+                  </div>
+                  <div style={{ opacity: 0.9, marginTop: 4 }}>
+                    {explanation.reason || "Reason not provided yet."}
+                  </div>
+                  <div style={{ fontSize: 12, opacity: 0.6, marginTop: 6 }}>
+                    Detected: {explanation.occurredAt || "—"}
+                  </div>
+                </section>
+              </div>
+            )}
+          </div>
+        </aside>
       </div>
     </main>
   );

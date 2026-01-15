@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 700">
-  <rect width="100%" height="100%" fill="none"/>
-  <image href="jobport-logo.png" x="0" y="0" width="600" height="700"/>
+<svg width="120" height="28" viewBox="0 0 120 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <text x="0" y="20" font-family="Inter, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" font-size="20" font-weight="600" letter-spacing="-0.015em" fill="#0f172a">
+    Job<tspan fill="#2563eb">Port</tspan>
+  </text>
 </svg>

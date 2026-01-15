@@ -1,0 +1,7 @@
+{
+  "name": "JobPort Shell Builder",
+  "id": "jobport-shell-builder",
+  "api": "1.0.0",
+  "main": "code.js",
+  "editorType": ["figma"]
+}

@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import NavItem from "./NavItem";
 
 async function logout() {
   await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/auth/logout`, {
@@ -12,87 +11,144 @@ async function logout() {
   window.location.href = "/";
 }
 
-export default function AppShell({
-  active = "applications",
-  title,
-  cta,
-  children,
-}) {
-  const router = useRouter();
-  const [trialActive, setTrialActive] = useState(false);
+function initialsFrom(nameOrEmail = "") {
+  const s = String(nameOrEmail || "").trim();
+  if (!s) return "U";
+  const parts = s.split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  if (s.includes("@")) return s[0].toUpperCase();
+  return s.slice(0, 2).toUpperCase();
+}
 
+export default function AppShell({ cta, children }) {
+  const router = useRouter();
+  const [identity, setIdentity] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Fetch identity (noop if not authed)
   useEffect(() => {
-    try {
-      const importMode = localStorage.getItem("jp_import_mode");
-      const trialFlag = localStorage.getItem("jp_trial_active");
-      setTrialActive(importMode === "mock" || trialFlag === "true");
-    } catch {
-      setTrialActive(false);
-    }
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/me`, {
+      credentials: "include",
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.email || d?.name) setIdentity(d);
+      })
+      .catch(() => {});
   }, []);
+
+  // Close menu on outside click
+  useEffect(() => {
+    function onDoc(e) {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(e.target)) setMenuOpen(false);
+    }
+    if (menuOpen) document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, [menuOpen]);
+
+  const authed = Boolean(identity);
+  const initials = useMemo(
+    () => initialsFrom(identity?.name || identity?.email),
+    [identity]
+  );
 
   return (
     <div className="jp-shell">
+      {/* Top bar */}
       <header className="jp-topbar">
         <div className="jp-topbar__inner">
           <div className="jp-topbar__left">
-            <button
-              className="jp-icon-btn"
-              aria-label="Menu"
-              type="button"
+            <div
+              className="jp-logo"
+              onClick={() => router.push(authed ? "/dashboard" : "/")}
+              role="button"
             >
-              ≡
-            </button>
-
-            <div className="jp-logo">
-              <div className="jp-logo__mark" />
-              <div className="jp-logo__word">JobPort</div>
+              <span className="jp-logo__word">JobPort</span>
             </div>
           </div>
 
-          <div className="jp-topbar__right">
-            {trialActive && (
-              <span className="jp-badge jp-badge--muted">
-                Trial active
-              </span>
+          <div className="jp-topbar__right" ref={menuRef}>
+            {authed && cta ? <div className="jp-topbar__cta">{cta}</div> : null}
+
+            {!authed ? (
+              <>
+                <button
+                  className="jp-link"
+                  type="button"
+                  onClick={() => router.push("/login")}
+                >
+                  Log in
+                </button>
+                <button
+                  className="jp-btn jp-btn--primary"
+                  type="button"
+                  onClick={() => router.push("/plans")}
+                >
+                  Get started
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="jp-avatar"
+                  type="button"
+                  aria-label="Account"
+                  onClick={() => setMenuOpen((v) => !v)}
+                >
+                  {initials}
+                </button>
+
+                {menuOpen && (
+                  <div className="jp-menu">
+                    <button
+                      className="jp-menu-item"
+                      type="button"
+                      onClick={() => router.push("/account")}
+                    >
+                      Account
+                    </button>
+                    <button
+                      className="jp-menu-item"
+                      type="button"
+                      onClick={() => router.push("/billing")}
+                    >
+                      Billing
+                    </button>
+                    <div className="jp-menu-sep" />
+                    <button
+                      className="jp-menu-item"
+                      type="button"
+                      onClick={logout}
+                    >
+                      Log out
+                    </button>
+                  </div>
+                )}
+              </>
             )}
-
-            <button
-              onClick={logout}
-              className="jp-text-btn"
-              type="button"
-            >
-              Log out
-            </button>
-
-            <div className="jp-avatar" aria-label="Account" />
           </div>
         </div>
       </header>
 
-      <div className="jp-body">
-        <aside className="jp-sidenav">
-          <NavItem
-            label="Job applications"
-            state={active === "applications" ? "active" : "default"}
-            onClick={() => router.push("/job-applications")}
-          />
-          <NavItem
-            label="Alerts"
-            state={active === "alerts" ? "active" : "default"}
-            onClick={() => router.push("/alerts")}
-          />
-        </aside>
+      {/* Content — DO NOT TOUCH LAYOUT */}
+      {children}
 
-        <section className="jp-content">
-          <div className="jp-content__header">
-            <h1 className="jp-h1">{title}</h1>
-            {cta ? <div className="jp-content__cta">{cta}</div> : null}
+      {/* Footer */}
+      <footer className="jp-footer">
+        <div className="jp-footer-inner">
+          <div className="jp-footer-left">
+            © JobPort 2026
           </div>
 
-          <div className="jp-content__body">{children}</div>
-        </section>
-      </div>
+          <div className="jp-footer-right">
+            <a href="/privacy">Privacy</a>
+              <span className="jp-footer-sep">•</span>
+              <a href="/terms">Terms</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

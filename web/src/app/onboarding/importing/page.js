@@ -1,66 +1,82 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { apiFetch } from "../../lib/api";
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function isValidEmail(email) {
-  const e = String(email || "").trim();
-  return e.includes("@") && e.includes(".") && e.length >= 6;
-}
-
 export default function ImportingPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [email, setEmail] = useState("");
-  const [step, setStep] = useState(0);
+  const connected = String(searchParams.get("connected") || "");
+  const [status, setStatus] = useState(null);
+  const [err, setErr] = useState("");
+  const [tick, setTick] = useState(0);
 
-  const steps = useMemo(
-    () => [
-      "Starting your workspace",
-      "Preparing your dashboard",
-      "Loading a demo pipeline",
-      "Getting you into the product",
-    ],
-    []
-  );
+  const pct = useMemo(() => {
+    const inbound = Number(status?.inboundEmails || 0);
+    const attached = Number(status?.attachedEmails || 0);
+    const apps = Number(status?.jobApplications || 0);
+
+    let p = 0;
+    if (inbound > 0) p = 20 + clamp(inbound, 0, 20) * 1.5;
+    if (attached > 0) p = Math.max(p, 55 + clamp(attached, 0, 20) * 1.5);
+    if (apps > 0) p = Math.max(p, 90);
+
+    return clamp(Math.round(p), 0, apps > 0 ? 100 : 99);
+  }, [status]);
 
   useEffect(() => {
-    try {
-      setEmail(localStorage.getItem("jp_activation_email") || "");
-    } catch {}
-  }, []);
+    let cancelled = false;
+    let intervalId = null;
 
-  useEffect(() => {
-    // If someone hits /importing directly without going through /
-    // send them back to the activation gate.
-    const clean = String(email || "").trim();
-    if (email && !isValidEmail(clean)) {
-      router.push("/");
-      return;
+    async function poll() {
+      try {
+        setErr("");
+
+        // ✅ Correct endpoint (authenticated via jp_session cookie)
+        const json = await apiFetch("/import/status");
+
+        if (cancelled) return;
+        setStatus(json);
+
+        if (Number(json?.jobApplications || 0) > 0) {
+          router.replace("/dashboard?welcome=1");
+          return;
+        }
+      } catch (e) {
+        if (cancelled) return;
+
+        const msg = e?.message || "Failed to fetch import status";
+        setErr(msg);
+
+        // If auth is missing/expired, send them to login/connect
+        if (String(msg).includes("unauthenticated") || String(msg).includes("(401)")) {
+          router.replace("/login");
+          return;
+        }
+      } finally {
+        if (!cancelled) setTick((t) => t + 1);
+      }
     }
 
-    // Lightweight “setup” progress (truthful demo mode).
-    const timers = [];
+    poll();
+    intervalId = setInterval(poll, 2000);
 
-    timers.push(setTimeout(() => setStep(1), 450));
-    timers.push(setTimeout(() => setStep(2), 1050));
-    timers.push(setTimeout(() => setStep(3), 1650));
+    return () => {
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [router]);
 
-    // Auto-continue into the product
-    timers.push(
-      setTimeout(() => {
-        router.push("/job-applications");
-      }, 2200)
-    );
-
-    return () => timers.forEach(clearTimeout);
-  }, [email, router]);
-
-  const activeIndex = clamp(step, 0, steps.length - 1);
+  const inbound = Number(status?.inboundEmails || 0);
+  const attached = Number(status?.attachedEmails || 0);
+  const apps = Number(status?.jobApplications || 0);
 
   return (
     <main
@@ -74,7 +90,7 @@ export default function ImportingPage() {
     >
       <section
         style={{
-          width: "min(760px, 100%)",
+          width: "min(920px, 100%)",
           border: "1px solid rgba(0,0,0,0.10)",
           borderRadius: 18,
           padding: 28,
@@ -82,72 +98,131 @@ export default function ImportingPage() {
           background: "rgba(255,255,255,0.95)",
         }}
       >
-        <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 700, opacity: 0.75 }}>
-          SETUP
+        <div style={{ fontSize: 12, letterSpacing: 1.2, fontWeight: 800, opacity: 0.75 }}>
+          IMPORTING
         </div>
 
-        <h1 style={{ margin: "10px 0 6px", fontSize: 28 }}>
-          Preparing your JobPort dashboard…
+        <h1 style={{ margin: "14px 0 10px", fontSize: 36, lineHeight: 1.08 }}>
+          Building your pipeline…
         </h1>
 
-        <p style={{ margin: 0, fontSize: 14, opacity: 0.8 }}>
-          {email ? (
-            <>
-              Using: <strong>{email}</strong>
-            </>
-          ) : (
-            "Setting up your workspace."
-          )}
+        <p style={{ margin: 0, fontSize: 15, opacity: 0.82, maxWidth: 760 }}>
+          We’re scanning for job signals in your inbox and attaching them to job applications.
         </p>
 
-        <div style={{ marginTop: 16 }}>
-          <div style={{ fontSize: 12, opacity: 0.7, marginBottom: 8 }}>
-            Progress
+        {connected === "google" && (
+          <div style={{ marginTop: 12, fontSize: 13, opacity: 0.8 }}>
+            Connected: <strong>Google</strong>
           </div>
+        )}
 
+        <div style={{ marginTop: 18 }}>
           <div
             style={{
-              height: 10,
+              height: 12,
               borderRadius: 999,
               border: "1px solid rgba(0,0,0,0.12)",
-              background: "rgba(0,0,0,0.03)",
+              background: "rgba(0,0,0,0.04)",
               overflow: "hidden",
             }}
           >
             <div
               style={{
                 height: "100%",
-                width: `${((activeIndex + 1) / steps.length) * 100}%`,
-                background: "rgba(0,0,0,0.18)",
-                transition: "width 240ms ease",
+                width: `${pct}%`,
+                background: "rgba(30,64,175,0.35)",
+                transition: "width 350ms ease",
               }}
             />
           </div>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: 12,
+              opacity: 0.8,
+            }}
+          >
+            <span>{pct}%</span>
+            <span>live</span>
+          </div>
         </div>
 
-        <ul style={{ marginTop: 14, paddingLeft: 18, fontSize: 14, opacity: 0.88 }}>
-          {steps.map((label, idx) => {
-            const done = idx < activeIndex;
-            const active = idx === activeIndex;
+        <div
+          style={{
+            marginTop: 16,
+            display: "grid",
+            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+            gap: 12,
+          }}
+        >
+          <div style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 16, padding: 14, background: "white" }}>
+            <div style={{ fontSize: 12, opacity: 0.75, fontWeight: 800 }}>EMAILS FOUND</div>
+            <div style={{ marginTop: 6, fontSize: 28, fontWeight: 900 }}>{inbound}</div>
+          </div>
 
-            return (
-              <li
-                key={label}
+          <div style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 16, padding: 14, background: "white" }}>
+            <div style={{ fontSize: 12, opacity: 0.75, fontWeight: 800 }}>EMAILS ATTACHED</div>
+            <div style={{ marginTop: 6, fontSize: 28, fontWeight: 900 }}>{attached}</div>
+          </div>
+
+          <div style={{ border: "1px solid rgba(0,0,0,0.10)", borderRadius: 16, padding: 14, background: "white" }}>
+            <div style={{ fontSize: 12, opacity: 0.75, fontWeight: 800 }}>JOB APPLICATIONS</div>
+            <div style={{ marginTop: 6, fontSize: 28, fontWeight: 900 }}>{apps}</div>
+          </div>
+        </div>
+
+        {err && (
+          <div
+            style={{
+              marginTop: 14,
+              border: "1px solid rgba(220, 38, 38, 0.35)",
+              borderRadius: 16,
+              padding: 12,
+              background: "rgba(220,38,38,0.06)",
+            }}
+          >
+            <div style={{ fontWeight: 800, color: "crimson" }}>Import status unavailable</div>
+            <div style={{ marginTop: 6, fontSize: 13, opacity: 0.85 }}>{err}</div>
+
+            <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <Link
+                href="/dashboard"
                 style={{
-                  marginBottom: 8,
-                  opacity: done ? 0.75 : active ? 1 : 0.55,
-                  fontWeight: active ? 700 : 400,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  padding: "8px 10px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  textDecoration: "none",
+                  fontWeight: 700,
+                  background: "white",
                 }}
               >
-                {label}
-              </li>
-            );
-          })}
-        </ul>
+                Go to funnel
+              </Link>
 
-        <div style={{ marginTop: 14, fontSize: 12, opacity: 0.7 }}>
-          Continuing automatically…
-        </div>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: 12,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  background: "white",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div style={{ marginTop: 16, fontSize: 12, opacity: 0.65 }}>Poll tick: {tick}</div>
       </section>
     </main>
   );

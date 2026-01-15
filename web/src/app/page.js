@@ -350,7 +350,9 @@ function DemoCarousel() {
           />
         </div>
       </div>
-
+      <div style={{ marginTop: 64, fontSize: 12, opacity: 0.7 }}>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
       <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         {DEMO_SLIDES.map((s, i) => (
           <button

@@ -188,7 +188,7 @@ export default function JobApplicationDetailPage({ params }) {
   return (
     <main style={{ padding: 24, maxWidth: 980, margin: "0 auto" }}>
       <header style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <Link href="/funnel">← Back to funnel</Link>
+        <Link href="/dashboard">← Back to dashboard</Link>
         <div style={{ flex: 1 }} />
         <Link href="/job-applications">List view</Link>
       </header>

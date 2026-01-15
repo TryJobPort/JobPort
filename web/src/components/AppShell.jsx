@@ -139,14 +139,14 @@ export default function AppShell({ cta, children }) {
       <footer className="jp-footer">
         <div className="jp-footer-inner">
           <div className="jp-footer-left">
-            © JobPort 2026
+            © {new Date().getFullYear()} JobPort
           </div>
 
-          <div className="jp-footer-right">
-            <a href="/privacy">Privacy</a>
-              <span className="jp-footer-sep">•</span>
-              <a href="/terms">Terms</a>
-          </div>
+          <nav className="jp-footer-right" aria-label="Legal">
+            <a href="/privacy">Privacy Policy</a>
+            <span className="jp-footer-sep">•</span>
+            <a href="/terms">Terms of Service</a>
+          </nav>
         </div>
       </footer>
     </div>

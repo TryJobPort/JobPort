@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import AppShell from "@/components/AppShell";
 
 function isValidEmail(email) {
   const e = String(email || "").trim();
@@ -41,7 +42,6 @@ export default function HomePage() {
 
   const [hoverPrimary, setHoverPrimary] = useState(false);
   const [hoverGoogle, setHoverGoogle] = useState(false);
-  const [hoverGetStarted, setHoverGetStarted] = useState(false);
 
   const canContinue = useMemo(() => isValidEmail(email), [email]);
 
@@ -63,73 +63,8 @@ export default function HomePage() {
     router.push("/importing");
   }
 
-  function onGetStarted() {
-    const el = document.getElementById("jp-email");
-    if (el) el.focus();
-  }
-
   return (
-    <main style={{ minHeight: "100vh", background: "#fff" }}>
-      {/* Header */}
-      <header
-        style={{
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 24px",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-          background: "rgba(255,255,255,0.9)",
-        }}
-      >
-        <Link
-          href="/"
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-            fontWeight: 800,
-            letterSpacing: 0.2,
-          }}
-        >
-          JobPort
-        </Link>
-
-        <nav style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <Link
-            href="/login"
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-              fontSize: 14,
-              opacity: 0.85,
-            }}
-          >
-            Log in
-          </Link>
-
-          <button
-            type="button"
-            onClick={onGetStarted}
-            onMouseEnter={() => setHoverGetStarted(true)}
-            onMouseLeave={() => setHoverGetStarted(false)}
-            style={{
-              padding: "10px 12px",
-              borderRadius: 12,
-              border: "1px solid rgba(0,0,0,0.14)",
-              background: hoverGetStarted ? "rgba(0,0,0,0.04)" : "#fff",
-              fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: hoverGetStarted
-                ? "0 6px 18px rgba(0,0,0,0.08)"
-                : "none",
-              transition: "background 120ms ease, box-shadow 120ms ease",
-            }}
-          >
-            Get started
-          </button>
-        </nav>
-      </header>
-
+    <AppShell cta={{ label: "Get started", href: "/signup" }}>
       {/* Hero */}
       <section
         style={{
@@ -204,12 +139,9 @@ export default function HomePage() {
                   border: "1px solid rgba(0,0,0,0.15)",
                   cursor: canContinue ? "pointer" : "not-allowed",
                   fontWeight: 800,
-                  background:
-                    hoverPrimary && canContinue ? "rgba(0,0,0,0.04)" : "#fff",
+                  background: hoverPrimary && canContinue ? "rgba(0,0,0,0.04)" : "#fff",
                   boxShadow:
-                    hoverPrimary && canContinue
-                      ? "0 6px 18px rgba(0,0,0,0.08)"
-                      : "none",
+                    hoverPrimary && canContinue ? "0 6px 18px rgba(0,0,0,0.08)" : "none",
                   transition: "background 120ms ease, box-shadow 120ms ease",
                 }}
               >
@@ -218,9 +150,7 @@ export default function HomePage() {
             </div>
 
             {err && (
-              <p style={{ marginTop: 10, color: "crimson", fontSize: 13 }}>
-                {err}
-              </p>
+              <p style={{ marginTop: 10, color: "crimson", fontSize: 13 }}>{err}</p>
             )}
 
             <div style={{ marginTop: 10, fontSize: 12, opacity: 0.7 }}>
@@ -232,7 +162,7 @@ export default function HomePage() {
                 Or continue with
               </div>
 
-              <a
+              <Link
                 href="/signup"
                 onMouseEnter={() => setHoverGoogle(true)}
                 onMouseLeave={() => setHoverGoogle(false)}
@@ -273,7 +203,7 @@ export default function HomePage() {
                   G
                 </span>
                 Continue with Google
-              </a>
+              </Link>
             </div>
           </form>
         </div>
@@ -281,18 +211,7 @@ export default function HomePage() {
         {/* Right */}
         <DemoCarousel />
       </section>
-
-      <footer
-        style={{
-          padding: "18px 24px 28px",
-          borderTop: "1px solid rgba(0,0,0,0.06)",
-          opacity: 0.75,
-          fontSize: 12,
-        }}
-      >
-        © {new Date().getFullYear()} JobPort
-      </footer>
-    </main>
+    </AppShell>
   );
 }
 
@@ -302,10 +221,7 @@ function DemoCarousel() {
 
   useEffect(() => {
     if (paused) return;
-    const t = setInterval(
-      () => setIdx((v) => (v + 1) % DEMO_SLIDES.length),
-      5200
-    );
+    const t = setInterval(() => setIdx((v) => (v + 1) % DEMO_SLIDES.length), 5200);
     return () => clearInterval(t);
   }, [paused]);
 
@@ -350,9 +266,7 @@ function DemoCarousel() {
           />
         </div>
       </div>
-      <div style={{ marginTop: 64, fontSize: 12, opacity: 0.7 }}>
-        <a href="/privacy">Privacy Policy</a>
-      </div>
+
       <div style={{ display: "flex", gap: 8, marginTop: 14 }}>
         {DEMO_SLIDES.map((s, i) => (
           <button
